@@ -85,13 +85,25 @@ WSGI_APPLICATION = 'ecole.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         # 'ENGINE': 'django.db.backends.mysql',
+#          'NAME': BASE_DIR / 'db.sqlite3',
+#         # 'NAME': 'ecole', # le nom de notre projet
+#         # 'USER': 'root', # le nom de l'admin sur wampserver
+#         # 'PASSWORD':"", # Le mot de passe s'il existe
+#     }
+# }
+
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
-        'NAME': 'ecole', # le nom de notre projet
-        'USER': 'root', # le nom de l'admin sur wampserver
-        'PASSWORD':"", # Le mot de passe s'il existe
+        'ENGINE': 'django.db.backends.mysql',  # Utilisez 'mysql' pour MySQL/MariaDB
+        'NAME': 'ecole',           # Nom de la base de données
+        'USER': 'root',          # Nom d'utilisateur MySQL
+        'PASSWORD': '',            # Mot de passe de l'utilisateur
+        'HOST': '127.0.0.1',          # Adresse IP ou nom de domaine du serveur WAMP
+        'PORT': '3306',                        # Port par défaut pour MySQL
     }
 }
 
