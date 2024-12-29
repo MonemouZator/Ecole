@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'groupe_classe',
     'matiere',
     'niveau',
+    'personnel',
 
 ]
 
@@ -103,7 +104,10 @@ DATABASES = {
         'USER': 'root',          # Nom d'utilisateur MySQL
         'PASSWORD': '',            # Mot de passe de l'utilisateur
         'HOST': '127.0.0.1',          # Adresse IP ou nom de domaine du serveur WAMP
-        'PORT': '3306',                        # Port par défaut pour MySQL
+        'PORT': '3306',                                            # Port par défaut pour MySQL
+         'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }
     }
 }
 
@@ -151,10 +155,11 @@ STATIC_ROOT=BASE_DIR / "staticfiles"
 
 # c'est la configuration qui permet de prendre en charge les fichiers statics et faites très attention une fois configurer
 # au debut, sa pourrait vous causer probleme au niveau de migration de table vers la base de donnee. si vous le faites , mettez la en commentaire
-# STATICFILES_DIRS=[
-#     BASE_DIR / 'static'
-# ]
+STATICFILES_DIRS=[
+    BASE_DIR / 'static'
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL='personnel.Administrateur'

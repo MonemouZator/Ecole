@@ -6,7 +6,7 @@ from groupe_classe.models import GroupeClasse
 class Eleve(models.Model):
     nom = models.CharField(max_length=50,db_index=False)
     prenom = models.CharField(max_length=50,db_index=False)
-    date_naissance = models.DateField()
+    date_naissance = models.DateField(null=True,blank=True)
     adresse = models.TextField()
     telephone = models.CharField(max_length=15,db_index=False)
     # email = models.EmailField(max_length=254)  # Limite explicite
