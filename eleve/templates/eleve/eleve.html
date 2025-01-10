@@ -1,0 +1,347 @@
+{% extends "Base/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>GESTION DES ENSEIGNANT(E)S</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+           
+
+            <div class="card">
+              <div class="card-header">
+
+                <a type="button" class="btn btn-primary" href="{% url 'forme' %}">Ajouter un nouveau élève </a> 
+              </div>
+
+
+             
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                  <th>N°</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Sexe</th>
+                    <th>Cotact</th>
+                    <th>Adresse</th>
+                    <th>Action</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for eleve in eleves %}
+                  <tr>
+                   <td>
+                   {{eleve.id}}
+                    </td>
+                    <td>
+                   {{eleve.nom}}
+                    </td>
+                    <td>
+                     {{eleve.prenom}}
+                    </td>
+                    <td>
+                      {{eleve.genre}}
+                    </td>
+                    <td> 
+                     {{eleve.telephone}}
+                    </td>
+                    <td> 
+                    {{eleve.lieu_naissance}}
+                    </td>
+                      <td> 
+                  
+     <!-- DEBUT DE LA FENETRE  DETAIL -->
+
+<a href="{% url 'detail'  %}">
+          <i class="fas fa-eye" style="font-size: 1.5rem;"></i> Voir
+ </a>
+
+<!-- DEBUT DE LA FENETRE MODALE DE MODIFICATION ELEVE -->
+<a href="#" data-toggle="modal" data-target="#modifie{{ nive.id }}" title="Modifier">
+                      <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                  </a>
+                  
+                  <div class="modal fade" id="modifie{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header bg-primary text-white">
+                                  <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <form action="{% url 'modifi-eleve' %}" method="post" enctype="multipart/form-data" class="row">
+                                      {% csrf_token %}
+                                      
+
+
+                                 <div class="form-group col-md-4">
+                                  <input type="hidden" value="{{nive.id}}" name="nive">
+                                  <label for="niveau">Niveau:</label>
+                                  <select name="nive" class="form-control" id="nive">
+                                     {% for nive in niveaus %}
+                                      <option value="{{ nive.id }}" {% if eleve.id == nive %} checked {% endif %}>{{nive}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                 <div class="form-group col-md-4">
+                                  <input type="hidden" value="{{group.id}}" name="group">
+                                  <label for="group">Groupe(option):</label>
+                                  <select name="group" class="form-control" id="group">
+                                     {% for group in groupes %}
+                                      <option value="{{ group.id }}" {% if eleve.id == group %} checked {% endif %}>{{group}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                               <div class="form-group col-md-4">
+                                  <input type="hidden" value="{{anne.id}}" name="anne">
+                                  <label for="anne">Année scolaire):</label>
+                                  <select name="anne" class="form-control" id="anne">
+                                     {% for anne in annes %}
+                                      <option value="{{ anne.id }}" {% if eleve.id == anne %} checked {% endif %}>{{anne}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+
+
+                                <div class="form-group col-md-6">
+                                    <label for="nom" class="col-form-label">Nom :</label>
+                                    <input type="text" class="form-control" id="nom" name="nom" required value="{{ eleve.nom }}">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="prenom" class="col-form-label">Prénom :</label>
+                                    <input type="text" class="form-control" id="prenom" name="prenom" required value="{{ eleve.prenom }}">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  
+                                  <label for="naissanceclass="col-form-label">Date naissance:</label>
+                                  {% with date_naissan=eleve.date_naissance|date:'Y-m-d' %}
+                                  <input type="date" class="form-control" id="date" name="date" required value="{{date_naissan}}">
+                                  {% endwith %}
+
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="lieu" class="col-form-label">Lieu de naissance:</label>
+                                  <input type="text" class="form-control" id="lieu" name="lieu" required  value="{{eleve.lieu_naissance}}">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                    <label for="sexe" class="col-form-label">Sexe:</label>
+                                    <select class="form-select form-control" aria-label="Default select example" name='sexe' >
+                                      <option value="Homme">Masculin</option>
+                                      <option value="Femme">Feminin</option>
+                                    </select>
+                                  </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="contact" class="col-form-label">Contact d'élève:</label>
+                                  <input type="text" class="form-control" id="contact" name="contact" required value="{{eleve.telephone}}">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="date" class="col-form-label">Photo:</label>
+                                  <input type="file" class="form-control" id="photo" name="photo"  value="{{eleve.photo}}">
+                                </div>
+
+
+                                 <div class="form-group col-md-4">
+                                  <label for="pere" class="col-form-label">Père:</label>
+                                  <input type="text" class="form-control" id="pere" name="pere" required value="{{eleve.pere}}">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="fp" class="col-form-label">Fonction du pere:</label>
+                                  <input type="text" class="form-control" id="fp" name="fp" require value="{{eleve.profession_pere}}">
+                                </div>
+
+                                 <div class="form-group col-md-4">
+                                  <label for="cp" class="col-form-label">Contact du père:</label>
+                                  <input type="text" class="form-control" id="cp" name="cp" required value="{{eleve.Contact_parent}}">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="mere" class="col-form-label"> Mère:</label>
+                                  <input type="text" class="form-control" id="mere" name="mere" required  value="{{eleve.mere}}">
+                                </div>
+
+                                 <div class="form-group col-md-4">
+                                  <label for="fm" class="col-form-label">Profession:</label>
+                                  <input type="text" class="form-control" id="fm" name="fm" required value="{{eleve.profession_mere}}">
+                                </div>
+
+                                <div class="form-group col-md-4">
+                                  <label for="cm" class="col-form-label">Contact :</label>
+                                  <input type="text" class="form-control" id="cm" name="cm" required value="{{eleve.Contact_mere}}">
+                                </div>
+        
+                        
+                                <input type="hidden" name="id" value="{{ eleve.id }}">
+
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                </div>
+                    
+                                  </form>
+                              </div>
+                                    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                
+
+                    <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" title="Supprimer">
+                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                    </a>
+
+                      <!-- Début de la fenêtre modale de suppression -->
+                      <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header bg-primary">
+                                      <h5 class="modal-title" id="exampleModalLabel">SUPPRESSION DES INFOS</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form action="{% url 'supprimer-eleve' eleve.id %}" method="post" class="row">
+                                          {% csrf_token %}
+                                          <p>
+                                              Voulez-vous vraiment supprimer les informations de :
+                                              <span class="text-primary">{{ eleve.nom }} {{ eleve.prenom }}</span> ?
+                                          </p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                      <button type="submit" class="btn btn-danger">Oui</button>
+                                  </div>
+                                      </form>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Fin de la fenêtre modale de suppression -->
+                          
+                  
+                    </td>
+                  </tr>
+                 {% endfor %}
+                  </tbody>
+                  
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

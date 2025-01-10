@@ -9,7 +9,7 @@ class Enseignant(models.Model):
         ("H","Masculin"),
         ("F","Feminin"),
     ]
-        nom=models.CharField(max_length=40,db_index=False)
+        nom=models.CharField(max_length=40,db_index=False ,unique=True)
         prenom=models.CharField(max_length=40,db_index=False)
         specialite=models.CharField(max_length=40,db_index=False)
         telephone=models.CharField(max_length=15,db_index=False)

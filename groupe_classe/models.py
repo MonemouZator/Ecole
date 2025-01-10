@@ -7,5 +7,5 @@ class GroupeClasse(models.Model):
     niveau = models.ForeignKey(Niveau , on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"{self.nom} ({self.niveau.nom})"
+        return f"{self.niveau} {self.nom} "
     

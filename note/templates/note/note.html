@@ -1,0 +1,361 @@
+{% extends "Base/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>GESTION DES NOTES</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                
+                
+                 <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Ajouter une note
+                      </button>
+        
+                      <!-- Modal -->
+                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                              <h5 class="modal-title" id="exampleModalLabel">Enregistrement des niveaux</h5>
+                        
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form action="{% url 'ajout-note' %}" method="post" class="row">
+
+                                      {% csrf_token %}
+
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{eleve.id}}" name="eleve">
+                                  <label for="eleve">Eleve :</label>
+                                  <select name="eleve" class="form-control" id="eleve">
+                                  <option value=""> selectioner un eleve</option>
+                                      {% for eleve in eleves %}
+                                      <option value="{{eleve.id}}">{{eleve}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{anne.id}}" name="anne">
+                                  <label for="anne">Année scolaire :</label>
+                                  <select name="anne" class="form-control" id="anne">
+                                  <option value=""> selectioner une année scolaire</option>
+                                      {% for anne in annes %}
+                                      <option value="{{anne.id}}">{{anne}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{mat.id}}" name="mat">
+                                  <label for="mat">Matiere:</label>
+                                  <select name="mat" class="form-control" id="mat">
+                                  <option value=""> selectioner une matire</option>
+                                      {% for mat in matires %}
+                                      <option value="{{mat.id}}">{{mat}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+                                 <div class="form-group col-md-6">
+                                  <label for="trimestre" class="col-form-label">Trimestre:</label>
+                                  <input type="test" class="form-control" id="trimestre" name="trimestre" required placeholder="saisie le trimestre">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="nc" class="col-form-label">Note cours:</label>
+                                  <input type="float" class="form-control" id="nc" name="nc" required placeholder="saisie la note de cours">
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="nco" class="col-form-label">Note compo:</label>
+                                  <input type="float" class="form-control" id="nco" name="nco" required placeholder="saisie la note de composition">
+                                </div
+        
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                              <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                          </form>
+                          </div>
+                        </div>
+                      </div>
+               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>N°</th>
+                    <th> Eleve</th>
+                    <th>Année </th>
+                    <th>Matiere</th>
+                    <th>Note1</th>
+                    <th>Note2</th>
+                    <th>Moyenne</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for note in notes  %}
+                    
+                 
+                  <tr>
+                    <td>
+                        {{note.id}}
+                    </td>
+                    <td>
+                        {{note.eleve}}
+                       
+                    </td>
+                    <td>
+                        {{note.annee_scolaire}}
+                    
+                    </td>
+                    <td>
+                        {{note.matiere}}
+                    
+                    </td>
+                    <td>
+                        {{note.note_cours}}
+                    
+                    </td>
+                    <td>
+                        {{note.note_comp}}
+                    
+                    </td>
+                    <td>
+                        {{note.moyenne}}
+                    
+                    </td>
+                    <td>
+                    
+
+                 
+                   <a href="#" data-toggle="modal" data-target="#modifie{{ note.id }}" title="Modifier">
+                      <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                  </a>
+                  
+                  <div class="modal fade" id="modifie{{ note.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header bg-primary text-white">
+                                  <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <form action="{% url 'modifi-note' %}" method="post" enctype="multipart/form-data" class="row">
+                                      {% csrf_token %}
+
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{eleve.id}}" name="eleve">
+                                  <label for="eleve">Eleve concerné:</label>
+                                  <select name="eleve" class="form-control" id="eleve">
+                                     {% for eleve in eleves %}
+                                      <option value="{{ eleve.id }}" {% if note.id == eleve %} checked {% endif %}>{{eleve}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>      
+
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{anne.id}}" name="anne">
+                                  <label for="anne">Année scolaire:</label>
+                                  <select name="anne" class="form-control" id="anne">
+                                     {% for anne in annes %}
+                                      <option value="{{ anne.id }}" {% if note.id == anne %} checked {% endif %}>{{anne}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <input type="hidden" value="{{mat.id}}" name="mat">
+                                  <label for="mat">Matiere:</label>
+                                  <select name="mat" class="form-control" id="mat">
+                                     {% for mat in matires %}
+                                      <option value="{{ mat.id }}" {% if note.id == mat %} checked {% endif %}>{{mat}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                 <div class="form-group col-md-6">
+                                  <label for="trimestre" class="col-form-label">Trimestre:</label>
+                                  <input type="test" class="form-control" id="trimestre" name="trimestre" required value="{{ note.trimestre }}">
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                    <label for="nom" class="col-form-label">Note cours :</label>
+                                    <input type="float" class="form-control" id="nc" name="nc" required value="{{ note.note_cours }}">
+                                </div>
+
+                                  <div class="form-group col-md-6">
+                                    <label for="nom" class="col-form-label">Note composition :</label>
+                                    <input type="float" class="form-control" id="nco" name="nco" required value="{{ note.note_comp }}">
+                                </div>
+                        
+                                <input type="hidden" name="id" value="{{ note.id }}">
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                </div>
+                    
+                                  </form>
+                              </div>
+                                    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                         <!-- Début de la fenêtre modale de suppression -->
+                    <a href="#" data-toggle="modal" data-target="#supprime{{ note.id }}" title="Supprimer">
+                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                    </a>
+
+                      <div class="modal fade" id="supprime{{ note.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header bg-primary">
+                                      <h5 class="modal-title" id="exampleModalLabel">SUPPRESSION DES INFOS</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form action="{% url 'supprimer-note' note.id %}" method="post" class="row">
+                                          {% csrf_token %}
+                                          <p>
+                                              Voulez-vous vraiment supprimer les informations de :
+                                              <span class="text-primary">{{ note.eleve }}</span> ?
+                                          </p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                      <button type="submit" class="btn btn-danger">Oui</button>
+                                  </div>
+                                      </form>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Fin de la fenêtre modale de suppression -->
+                    
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                 
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

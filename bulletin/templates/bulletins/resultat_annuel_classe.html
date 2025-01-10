@@ -1,0 +1,173 @@
+{% extends "Base/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>Résultats des Bulletins</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+            <li class="breadcrumb-item active">Résultats</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Filtrer les Résultats</h3>
+        </div>
+        <div class="card-body">
+          <form method="get" class="form-inline">
+            {% comment %} <label for="groupe_classe" class="mr-2">Groupe Classe :</label> {% endcomment %}
+            <select name="groupe_classe" id="groupe_classe" class="form-control mr-3" required>
+              <option value="">-- Sélectionnez --</option>
+              {% for groupe in groupes_classes %}
+                <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>
+                  {{ groupe.nom }}
+                </option>
+              {% endfor %}
+            </select>
+
+            {% comment %} <label for="annee_scolaire" class="mr-2">Année Scolaire :</label> {% endcomment %}
+            <select name="annee_scolaire" id="annee_scolaire" class="form-control mr-3" required>
+              <option value="">-- Sélectionnez --</option>
+              {% for annee in annees_scolaires %}
+                <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+                  {{ annee.nom }}
+                </option>
+              {% endfor %}
+            </select>
+
+            {% comment %} <label for="trimestre" class="mr-2">Trimestre :</label> {% endcomment %}
+            <select name="trimestre" id="trimestre" class="form-control mr-3" required>
+              <option value="">-- Sélectionnez --</option>
+              <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
+              <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
+              <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Rechercher</button>
+          </form>
+        </div>
+      </div>
+
+      {% if error_message %}
+        <div class="alert alert-warning">{{ error_message }}</div>
+      {% endif %}
+
+      {% if sorted_bulletins %}
+        <div class="card mt-4">
+          <div class="card-header">
+            <h3 class="card-title">Résultats</h3>
+          </div>
+          <div class="card-body table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th>Rang</th>
+                  <th>Nom de l'élève</th>
+                  <th>Moyenne Trimestrielle</th>
+                  <th>Observation</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for data in sorted_bulletins %}
+                  <tr>
+                    <td>{{ data.rang }}</td>
+                    <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
+                    <td>{{ data.moyenne }}</td>
+                    <td>{{ data.observation }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% else %}
+        <div class="alert alert-info mt-4">Aucun résultat trouvé pour les critères sélectionnés.</div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

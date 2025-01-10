@@ -9,14 +9,14 @@ from annee_scolaire.models import AnneeScolaire
 class Note(models.Model):
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
     matiere = models.ForeignKey(Matiere, on_delete=models.CASCADE)
-    note_comp = models.FloatField()  # Note de compétence
-    note_cours = models.FloatField()  # Note de cours
+    note_cours = models.FloatField()
+    note_comp = models.FloatField()
+    trimestre = models.PositiveIntegerField()  # Cela devrait être un entier
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
 
     @property
     def moyenne(self):
-        """Calcule la moyenne des deux notes."""
-        return (self.note_comp + self.note_cours) / 2
+        return round((self.note_comp + self.note_cours) / 2, 2)
 
     def __str__(self):
-        return f"{self.eleve} - {self.matiere} : Moyenne {self.moyenne:.2f}"
+        return f"{self.eleve} - {self.matiere}"

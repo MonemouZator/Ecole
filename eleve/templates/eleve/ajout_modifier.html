@@ -1,0 +1,100 @@
+{% extends "base/index.html" %}
+
+{% block styl_parent %}
+  <title>Bulletins Annuels</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+  <body class="hold-transition sidebar-mini">
+  {% endblock body %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Bulletin Annuel des Élèves</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <form method="get">
+                  <label for="niveau">Niveau :</label>
+                  <select name="niveau" id="niveau" required>
+                    <option value="">-- Sélectionnez un niveau --</option>
+                    {% for niveau in niveaux %}
+                      <option value="{{ niveau.id }}" {% if request.GET.niveau == niveau.id|stringformat:"s" %}selected{% endif %}>
+                        {{ niveau.nom }}
+                      </option>
+                    {% endfor %}
+                  </select>
+
+                  <label for="annee_scolaire">Année Scolaire :</label>
+                  <select name="annee_scolaire" id="annee_scolaire" required>
+                    <option value="">-- Sélectionnez une année scolaire --</option>
+                    {% for annee in annees_scolaires %}
+                      <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+                        {{ annee.nom }}
+                      </option>
+                    {% endfor %}
+                  </select>
+
+                  <button type="submit">Rechercher</button>
+                </form>
+              </div>
+
+              <div class="card-body">
+                {% if bulletins_annuels %}
+                  <h2 style="text-align: center;">Résultats</h2>
+                  {% for bulletin in bulletins_annuels %}
+                    <div style="margin-bottom: 30px;">
+                      <h3>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }} ({{ bulletin.eleve.niveau.nom }} - {{ bulletin.annee_scolaire.nom }})</h3>
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Matière</th>
+                            <th>Moyenne Trimestre 1</th>
+                            <th>Moyenne Trimestre 2</th>
+                            <th>Moyenne Trimestre 3</th>
+                            <th>Moyenne Annuelle</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for note in bulletin.notes_par_matiere %}
+                            <tr>
+                              <td>{{ note.matiere__nom }}</td>
+                              <td>{{ note.moyenne_t1 }}</td>
+                              <td>{{ note.moyenne_t2 }}</td>
+                              <td>{{ note.moyenne_t3 }}</td>
+                              <td>{{ bulletin.moyenne_totale_annuelle }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    </div>
+                  {% endfor %}
+                {% else %}
+                  <p>Aucun bulletin trouvé pour les critères sélectionnés.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}

@@ -246,36 +246,62 @@
                   </a>
               </li>
               <li class="nav-item">
-                <a href="pages/UI/icons.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Eleve</p>
-                </a>
-              </li>
+    <a href="{% url 'eleve' %}" class="nav-link">
+        <i class="far fa-circle nav-icon"></i>
+        <p>Eleve</p>
+    </a>
+</li>
               <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
+                <a href="{% url 'matiere' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Matiere</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/UI/sliders.html" class="nav-link">
+                <a href="{% url 'note' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Classe</p>
                 </a>
               </li>
+           
               <li class="nav-item">
-                <a href="pages/UI/modals.html" class="nav-link">
+                <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Session</p>
+                  <p>Bulletins Trimes</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/UI/navbar.html" class="nav-link">
+                <a href="{% url 'bulletins_annuels' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Emploi du temps</p>
                 </a>
               </li>
               
+              <li class="nav-item">
+                <a href="{% url 'bulletins_option' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>bulletin trimestriel option</p>
+                </a>
+              </li>
+                  <li class="nav-item">
+                <a href="{% url 'bulletins_groupe' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>bulletin Annuel option</p>
+                </a>
+              </li>
+              </li>
+                <li class="nav-item">
+                <a href="{% url 'resultat_groupe' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Resultat Annuel</p>
+                </a>
+                </li>
+                 <li class="nav-item">
+                <a href="{% url 'resultat_annuel' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Resultat Annuel G</p>
+                </a>
+                </li>
               
             </ul>
           </li>
@@ -304,13 +330,13 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/UI/buttons.html" class="nav-link">
+                <a href="{% url 'niveau' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Niveau</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="pages/UI/sliders.html" class="nav-link">
+                <a href="{% url 'groupe' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Groupe de classe</p>
                 </a>

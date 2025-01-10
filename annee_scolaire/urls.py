@@ -8,7 +8,7 @@ urlpatterns = [
 
     # autres modèles d'URL
     path('', views.annee_scolaire, name='an'),  # Assurez-vous que le nom correspond
-    path('/',views.ajout,name='ajout-annee'),# Chemin d'ajout  des informations
+    path('ajout-annee',views.ajout,name='ajout-annee'),# Chemin d'ajout  des informations
     path('annee/',views.modifier,name='modifi-annee'),# Chemin de modification  des informations
       path('supprime/<pk>/',views.supprimer,name='supprimer-annee'),
     # path('detail/',views.detail_enseignant,name='detail'),

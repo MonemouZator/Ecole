@@ -1,0 +1,165 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>enseignant | Accueil</title>
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Bulletins Trimestriels 3</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+              <li class="breadcrumb-item active">Bulletins Trimestriels</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <!-- Formulaire de filtre -->
+                <div class="form-container">
+                  <form method="get">
+                    <div class="form-row">
+                      <div class="form-group col-md-4">
+                        <label for="groupe_classe">Groupe / Classe :</label>
+                        <select name="groupe_classe" id="groupe_classe" class="form-control" required>
+                          <option value="">-- Sélectionnez un groupe / classe --</option>
+                          {% for groupe in groupes_classes %}
+                            <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>
+                              {{ groupe.nom }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-4">
+                        <label for="annee_scolaire">Année Scolaire :</label>
+                        <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
+                          <option value="">-- Sélectionnez une année scolaire --</option>
+                          {% for annee in annees_scolaires %}
+                            <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+                              {{ annee.nom }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class="form-group col-md-4">
+                        <label for="trimestre">Trimestre :</label>
+                        <select name="trimestre" id="trimestre" class="form-control" required>
+                          <option value="">-- Sélectionnez un trimestre --</option>
+                          <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
+                          <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
+                          <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-primary">Rechercher</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              <div class="line"></div>
+
+              <!-- Affichage des bulletins -->
+              {% if bulletins_trimestriels %}
+                <div class="card-body">
+                  <table id="bulletinsTable" class="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Nom de l'élève</th>
+                        <th>Groupe / Classe</th>
+                        <th>Année Scolaire</th>
+                        <th>Matière</th>
+                        <th>Moyenne</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for bulletin in bulletins_trimestriels %}
+                        {% for note in bulletin.notes_par_matiere %}
+                          <tr>
+                            <td>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }}</td>
+                            <td>{{ bulletin.eleve.groupe_classe.nom }}</td>
+                            <td>{{ bulletin.eleve.annee_scolaire.nom }}</td>
+                            <td>{{ note.matiere__nom }}</td>
+                            <td>{{ note.moyenne_matiere }}</td>
+                          </tr>
+                        {% endfor %}
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              {% else %}
+                <p>Aucun bulletin trouvé pour les critères sélectionnés.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripte %}
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+<!-- Initialisation de DataTables -->
+<script>
+  $(document).ready(function() {
+    $('#bulletinsTable').DataTable({
+      "responsive": true,
+      "autoWidth": false,
+      "lengthChange": false,
+      "paging": true,
+      "info": true,
+      "buttons": ["copy", "excel", "pdf", "print"]
+    }).buttons().container().appendTo('#bulletinsTable_wrapper .col-md-6:eq(0)');
+  });
+</script>
+{% endblock %}
