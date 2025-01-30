@@ -10,9 +10,7 @@ urlpatterns = [
     path('ajout-note/',views.ajout_note,name='ajout-note'),# Chemin d'ajout  des informations
     path('modifie-note/',views.modifier,name='modifi-note'),# Chemin de modification  des informations
     path('supprime/<pk>/',views.supprimer,name='supprimer-note'),
-   
-
-
+    path('attribuer/', views.attribuer_notes, name='attribuer-notes'),
 
 
 

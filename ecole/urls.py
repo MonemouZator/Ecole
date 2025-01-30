@@ -18,6 +18,9 @@ urlpatterns = [
     path('modification/',include('enseignant.urls')), # Ajout des informations
     path('suppression/',include('enseignant.urls')), # Ajout des informations
     path('detail-enseignant/',include('enseignant.urls')),
+    path('paiement_salaire/',include('enseignant.urls')),
+    path('depense/',include('enseignant.urls')),
+    path('finance/',include('enseignant.urls')),
 
 # LES CHEMIN DE ANNEE SCOLAIRE
     path('annee-scolaire/',include('annee_scolaire.urls')),
@@ -57,20 +60,29 @@ urlpatterns = [
     path('ajout-eleve/',include('eleve.urls')),
     path('modifie-eleve/',include('eleve.urls')),
     path('supprime-eleve/',include('eleve.urls')),
-
-#LES CHEMIN DES MATIERES
+    path('page-afichage/',include('eleve.urls')),
+    path('reçu-tranche1/',include('eleve.urls')),
+    path('tranche2/',include('eleve.urls')),
+    path('payer/',include('eleve.urls')),
+#LES CHEMIN DES NOTES
     path('note/',include('note.urls')),
     path('ajout-note/',include('note.urls')),
     path('modifie-note/',include('note.urls')),
     path('supprime-note/',include('note.urls')),
-
-#LES CHEMIN DES MATIERES
+    path('attribuer-note/',include('note.urls')),
+    
+#LES CHEMIN DES BULLETINS
     path('bulletins_trimestriels/',include('bulletin.urls')),
     path('bulletins_annuels/',include('bulletin.urls')),
     path('bulletins_option/',include('bulletin.urls')),
     path('bulletins_groupe/',include('bulletin.urls')),
     path('resultat-groupe/',include('bulletin.urls')),
     path('resultat-groupe-annel/',include('bulletin.urls')),
+    path('valider-bulletin/',include('bulletin.urls')),
+    path('valider-bulletin/',include('bulletin.urls')),
+    path('valider-/',include('bulletin.urls')),
 
+
+    
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

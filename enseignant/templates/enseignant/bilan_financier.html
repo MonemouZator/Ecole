@@ -1,0 +1,181 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bilan Financier | Gestion des Finances</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+  <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .bilan-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #2C3E50;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    strong {
+        font-size: 1.3rem;
+        color: #16A085;
+    }
+
+    .bilan-container div {
+        margin-bottom: 30px;
+    }
+
+    .total, .result {
+        display: inline-block;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .total {
+        background-color: #E8F8F5;
+        color: #16A085;
+        border: 1px solid #16A085;
+    }
+
+    .result {
+        background-color: #E74C3C;
+        color: white;
+        border: 1px solid #E74C3C;
+    }
+
+    .bilan-container div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-entree {
+        background-color: #2ecc71; /* Green */
+    }
+
+    .card-depense {
+        background-color: #f39c12; /* Yellow */
+    }
+
+    .card-salaire {
+        background-color: #3498db; /* Blue */
+    }
+
+    .card-sortie {
+        background-color: #e74c3c; /* Red */
+    }
+
+    .card-solde {
+        background-color: #9b59b6; /* Purple */
+    }
+
+    @media screen and (max-width: 768px) {
+        .bilan-container {
+            width: 95%;
+        }
+        .card {
+            font-size: 1.2rem;
+        }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+  <!-- Contenu de la page spécifique -->
+{% endblock %}
+
+
+{% block contenu %}
+   <div class="content-wrapper container">
+    <h1>Bilan Financier de l'École</h1>
+
+    <div class="bilan-container">
+        <!-- Entrées -->
+        <div class="card card-entree">
+            <h2><strong>Total des Entrées </strong></h2>
+            <p> <span class="total">{{ total_entrees }} GNF</span></p>
+        </div>
+
+        <!-- Dépenses -->
+        {% comment %} <div class="card card-depense">
+                <h2>Dépenses</h2>
+                <p><strong>Total des Dépenses :</strong> {{ total_depenses }} GNF</p>
+            </div>
+
+            <!-- Paiement des Salaires -->
+            <div class="card card-salaire">
+                <h2>Paiement des Salaires</h2>
+                <p><strong>Total des Salaires :</strong> {{ total_salaires }} GNF</p>
+            </div> {% endcomment %}
+
+            <!-- Sorties -->
+            <div class="card card-sortie">
+                <h2><strong>Total des Sorties :</strong></h2>
+                <p> <span class="total">{{ total_sorties }} GNF</span></p>
+            </div>
+
+            <!-- Solde -->
+            <div class="card card-solde">
+                <h2><strong>Solde Net </strong></h2>
+                <p> <span class="result">{{ solde }} GNF</span></p>
+            </div>
+
+            </div>
+
+    </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

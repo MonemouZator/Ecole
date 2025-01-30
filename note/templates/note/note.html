@@ -52,82 +52,11 @@
             <div class="card">
               <div class="card-header">
                 
-                
-                 <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
-                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        Ajouter une note
-                      </button>
-        
-                      <!-- Modal -->
-                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                              <h5 class="modal-title" id="exampleModalLabel">Enregistrement des niveaux</h5>
-                        
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="{% url 'ajout-note' %}" method="post" class="row">
-
-                                      {% csrf_token %}
-
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{eleve.id}}" name="eleve">
-                                  <label for="eleve">Eleve :</label>
-                                  <select name="eleve" class="form-control" id="eleve">
-                                  <option value=""> selectioner un eleve</option>
-                                      {% for eleve in eleves %}
-                                      <option value="{{eleve.id}}">{{eleve}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{anne.id}}" name="anne">
-                                  <label for="anne">Année scolaire :</label>
-                                  <select name="anne" class="form-control" id="anne">
-                                  <option value=""> selectioner une année scolaire</option>
-                                      {% for anne in annes %}
-                                      <option value="{{anne.id}}">{{anne}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{mat.id}}" name="mat">
-                                  <label for="mat">Matiere:</label>
-                                  <select name="mat" class="form-control" id="mat">
-                                  <option value=""> selectioner une matire</option>
-                                      {% for mat in matires %}
-                                      <option value="{{mat.id}}">{{mat}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-                                 <div class="form-group col-md-6">
-                                  <label for="trimestre" class="col-form-label">Trimestre:</label>
-                                  <input type="test" class="form-control" id="trimestre" name="trimestre" required placeholder="saisie le trimestre">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="nc" class="col-form-label">Note cours:</label>
-                                  <input type="float" class="form-control" id="nc" name="nc" required placeholder="saisie la note de cours">
-                                </div>
-                                <div class="form-group col-md-6">
-                                  <label for="nco" class="col-form-label">Note compo:</label>
-                                  <input type="float" class="form-control" id="nco" name="nco" required placeholder="saisie la note de composition">
-                                </div
-        
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                              <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
-                      </div>
-               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                  <li class="buton">
+                    <a class="btn btn-primary mt-3"href="{% url 'attribuer-notes' %}" >Attribuer des notes</a>
+                  </li>
+                 
+               
               </div>
               <!-- /.card-header -->
               <div class="card-body">

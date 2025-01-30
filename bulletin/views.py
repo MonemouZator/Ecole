@@ -272,3 +272,127 @@ def resultat_annuel(request):
         'annees_scolaires': annees_scolaires,
         'sorted_bulletins': sorted_bulletins,
     })
+
+#VALIDATION DES BULLETINS TRIMESTRIELL ET ANNUELS
+
+
+#CREATION DES BULLETINS
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from eleve.models import Eleve
+from annee_scolaire.models import AnneeScolaire
+from groupe_classe.models import GroupeClasse
+from .models import BulletinTrimestriel
+
+def valider_bulletin_trimestre(request):
+    if request.method == 'POST':
+        annee_scolaire_id = request.POST.get('annee_scolaire')
+        groupe_classe_id = request.POST.get('groupe_classe')
+        trimestre = request.POST.get('trimestre', 1)  # Par défaut, trimestre 1 si non spécifié
+
+        # Vérifiez que les champs sont remplis
+        if not annee_scolaire_id or not groupe_classe_id:
+            messages.error(request, "Veuillez sélectionner une année scolaire et un groupe de classe.")
+            return redirect('valider-bulletin-trimestre')  # Remplacez par le nom de votre URL
+
+        # Récupérer les données sélectionnées
+        try:
+            annee_scolaire = AnneeScolaire.objects.get(id=annee_scolaire_id)
+            groupe_classe = GroupeClasse.objects.get(id=groupe_classe_id)
+        except (AnneeScolaire.DoesNotExist, GroupeClasse.DoesNotExist):
+            messages.error(request, "Les données sélectionnées sont invalides.")
+            return redirect('trimestre')
+
+        # Récupérer les élèves du groupe de classe
+        eleves = Eleve.objects.filter(groupe_classe=groupe_classe, annee_scolaire=annee_scolaire)
+
+        if not eleves.exists():
+            messages.warning(request, "Aucun élève trouvé pour ce groupe de classe et cette année scolaire.")
+            return redirect('trimestre')
+
+        # Créer les bulletins trimestriels pour chaque élève
+        for eleve in eleves:
+            # Vérifier si le bulletin existe déjà
+            bulletin_existe = BulletinTrimestriel.objects.filter(
+                eleve=eleve,
+                trimestre=trimestre,
+                annee_scolaire=annee_scolaire
+            ).exists()
+
+            if not bulletin_existe:
+                BulletinTrimestriel.objects.create(
+                    eleve=eleve,
+                    trimestre=trimestre,
+                    annee_scolaire=annee_scolaire
+                )
+
+        messages.success(request, "Les bulletins ont été validés avec succès.")
+        return redirect('trimestre')  # Redirigez vers la page pour afficher le succès
+
+    # Charger les données pour le formulaire
+    annees_scolaires = AnneeScolaire.objects.all()
+    groupes_classes = GroupeClasse.objects.all()
+
+    return render(request, 'bulletins/trimestre.html', {
+        'annees_scolaires': annees_scolaires,
+        'groupes_classes': groupes_classes,
+    })
+
+
+#VALIDATION DES BULLETINS ANNUELS
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import BulletinAnnuel
+
+
+def valider_bulletin_annuel(request):
+    if request.method == 'POST':
+        annee_scolaire_id = request.POST.get('annee_scolaire')
+        groupe_classe_id = request.POST.get('groupe_classe')
+
+        # Vérifiez que les champs sont remplis
+        if not annee_scolaire_id or not groupe_classe_id:
+            messages.error(request, "Veuillez sélectionner une année scolaire et un groupe de classe.")
+            return redirect('valider_bulletin')  # Remplacez par le nom de votre URL
+
+        # Récupérer les données sélectionnées
+        try:
+            annee_scolaire = AnneeScolaire.objects.get(id=annee_scolaire_id)
+            groupe_classe = GroupeClasse.objects.get(id=groupe_classe_id)
+        except (AnneeScolaire.DoesNotExist, GroupeClasse.DoesNotExist):
+            messages.error(request, "Les données sélectionnées sont invalides.")
+            return redirect('valider_bulletin')
+
+        # Récupérer les élèves du groupe de classe et de l'année scolaire
+        eleves = Eleve.objects.filter(groupe_classe=groupe_classe, annee_scolaire=annee_scolaire)
+
+        if not eleves.exists():
+            messages.warning(request, "Aucun élève trouvé pour ce groupe de classe et cette année scolaire.")
+            return redirect('valider_bulletin')
+
+        # Créer ou valider les bulletins annuels pour chaque élève
+        for eleve in eleves:
+            # Vérifier si le bulletin annuel existe déjà pour l'élève et l'année scolaire
+            bulletin_existe = BulletinAnnuel.objects.filter(
+                eleve=eleve,
+                annee_scolaire=annee_scolaire
+            ).exists()
+
+            if not bulletin_existe:
+                BulletinAnnuel.objects.create(
+                    eleve=eleve,
+                    annee_scolaire=annee_scolaire
+                )
+
+        messages.success(request, "Les bulletins annuels ont été validés avec succès.")
+        return redirect('valider_bulletin')  # Redirigez vers la page de validation
+
+    # Charger les données pour le formulaire
+    annees_scolaires = AnneeScolaire.objects.all()
+    groupes_classes = GroupeClasse.objects.all()
+
+    return render(request, 'bulletins/valider_bulletin.html', {
+        'annees_scolaires': annees_scolaires,
+        'groupes_classes': groupes_classes,
+    })

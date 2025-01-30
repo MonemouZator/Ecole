@@ -38,8 +38,8 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'home' %}">accueil</a></li>
-              <li class="breadcrumb-item active">Tableau de bord</li>
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+              <li class="breadcrumb-item active">Enregistrement Élève</li>
             </ol>
           </div>
         </div>
@@ -53,151 +53,131 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                
-               
-        
-                            <form action="{% url 'ajout-eleve' %}" method="post" class="row">
+                <!-- Formulaire d'ajout d'élève -->
+                <form action="{% url 'ajout-eleve' %}" method="post" class="row" enctype="multipart/form-data">
+                  {% csrf_token %}
 
-                                      {% csrf_token %}
-
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{nive.id}}" name="nive">
-                                  <label for="nive">Niveau :</label>
-                                  <select name="nive" class="form-control" id="nive">
-                                  <option value=""> selectioner un niveau</option>
-                                      {% for nive in niveaus %}
-                                      <option value="{{nive.id}}">{{nive}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{anne.id}}" name="anne">
-                                  <label for="anne">Année scolaire :</label>
-                                  <select name="anne" class="form-control" id="anne">
-                                  <option value=""> selectioner une année scolaire</option>
-                                      {% for anne in annes %}
-                                      <option value="{{anne.id}}">{{anne}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                  <input type="hidden" value="{{group.id}}" name="group">
-                                  <label for="group">Groupe pedagogique(option) :</label>
-                                  <select name="group" class="form-control" id="group">
-                                  <option value=""> selectioner un niveau</option>
-                                      {% for group in groupes %}
-                                      <option value="{{group.id}}">{{group}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="nom" class="col-form-label">Nom de l'élève:</label>
-                                  <input type="text" class="form-control" id="nom" name="nom" required placeholder="entrer le nom de l'élève">
-                                </div>
-
-
-                                 <div class="form-group col-md-6">
-                                  <label for="prenom" class="col-form-label">Prénom:</label>
-                                  <input type="text" class="form-control" id="prenom" name="prenom" required placeholder="entrer le préno de l'élève">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="date" class="col-form-label">Date de naissance:</label>
-                                  <input type="date" class="form-control" id="date" name="date" required>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="lieu" class="col-form-label">Lieu de naissance:</label>
-                                  <input type="text" class="form-control" id="lieu" name="lieu" required placeholder="entrer le lieu de naissance">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                    <label for="sexe" class="col-form-label">Sexe:</label>
-                                    <select class="form-select form-control" aria-label="Default select example" name='sexe'>
-                                      <option value="Homme">Masculin</option>
-                                      <option value="Femme">Feminin</option>
-                                    </select>
-                                  </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="contact" class="col-form-label">Contact d'élève:</label>
-                                  <input type="text" class="form-control" id="contact" name="contact" required placeholder="entrer le contact de l'élève">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="date" class="col-form-label">Photo:</label>
-                                  <input type="file" class="form-control" id="photo" name="photo" required>
-                                </div>
-
-
-                                 <div class="form-group col-md-6">
-                                  <label for="pere" class="col-form-label">Père:</label>
-                                  <input type="text" class="form-control" id="pere" name="pere" required placeholder="entrer le nom et prénom du père">
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="fp" class="col-form-label">Fonction du pere:</label>
-                                  <input type="text" class="form-control" id="fp" name="fp" required placeholder="entrer la fonction du pere">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="cp" class="col-form-label">Contact du père:</label>
-                                  <input type="text" class="form-control" id="cp" name="cp" required>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="mere" class="col-form-label"> Nom et prénom de la mère:</label>
-                                  <input type="text" class="form-control" id="mere" name="mere" required placeholder="entrer le nom et prénom de la mère">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="fm" class="col-form-label">Fonction de la mere:</label>
-                                  <input type="text" class="form-control" id="fm" name="fm" required>
-                                </div>
-
-                                <div class="form-group col-md-6">
-                                  <label for="cm" class="col-form-label">Contact de la mere:</label>
-                                  <input type="text" class="form-control" id="cm" name="cm" required placeholder="entrer le cotact de la mère">
-                                </div>
-        
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                              <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
+                  <!-- Messages de succès et d'erreur -->
+                  {% if messages %}
+                    <div class="col-12">
+                      <div class="alert alert-info">
+                        {% for message in messages %}
+                          <p>{{ message }}</p>
+                        {% endfor %}
                       </div>
-               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
-             </div>
-              <!-- /.card-header -->
-              
+                    </div>
+                  {% endif %}
 
-                 
-                  
-                 
-                  
-                  
+                  <div class="form-group col-md-6">
+                    <label for="nive">Niveau :</label>
+                    <select name="nive" class="form-control" id="nive" required>
+                      <option value="">Sélectionner un niveau</option>
+                      {% for nive in niveaus %}
+                        <option value="{{ nive.id }}">{{ nive }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="anne">Année scolaire :</label>
+                    <select name="anne" class="form-control" id="anne" required>
+                      <option value="">Sélectionner une année scolaire</option>
+                      {% for anne in annes %}
+                        <option value="{{ anne.id }}">{{ anne }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="group">Groupe pédagogique (option) :</label>
+                    <select name="group" class="form-control" id="group" required>
+                      <option value="">Sélectionner un groupe</option>
+                      {% for group in groupes %}
+                        <option value="{{ group.id }}">{{ group }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="nom">Nom de l'élève :</label>
+                    <input type="text" class="form-control" id="nom" name="nom" required placeholder="Entrer le nom de l'élève">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" class="form-control" id="prenom" name="prenom" required placeholder="Entrer le prénom de l'élève">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="date">Date de naissance :</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="lieu">Lieu de naissance :</label>
+                    <input type="text" class="form-control" id="lieu" name="lieu" required placeholder="Entrer le lieu de naissance">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="sexe">Sexe :</label>
+                    <select class="form-control" name="sexe" required>
+                      <option value="Homme">Masculin</option>
+                      <option value="Femme">Féminin</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="contact">Contact de l'élève :</label>
+                    <input type="tel" class="form-control" id="contact" name="contact" required placeholder="Entrer le contact de l'élève">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="photo">Photo :</label>
+                    <input type="file" class="form-control" id="photo" name="photo" required>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="pere">Nom et prénom du père :</label>
+                    <input type="text" class="form-control" id="pere" name="pere" required placeholder="Entrer le nom et prénom du père">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="fp">Fonction du père :</label>
+                    <input type="text" class="form-control" id="fp" name="fp" required placeholder="Entrer la fonction du père">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="cp">Contact du père :</label>
+                    <input type="tel" class="form-control" id="cp" name="cp" required placeholder="Entrer le contact du père">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="mere">Nom et prénom de la mère :</label>
+                    <input type="text" class="form-control" id="mere" name="mere" required placeholder="Entrer le nom et prénom de la mère">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="fm">Fonction de la mère :</label>
+                    <input type="text" class="form-control" id="fm" name="fm" required placeholder="Entrer la fonction de la mère">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="cm">Contact de la mère :</label>
+                    <input type="tel" class="form-control" id="cm" name="cm" required placeholder="Entrer le contact de la mère">
+                  </div>
+
+                  <div class="modal-footer col-12">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                  </div>
+                </form>
               </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
-
-
-            <!-- /.card -->
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
 {% endblock %}
 
   

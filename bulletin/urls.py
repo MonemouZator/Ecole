@@ -8,5 +8,6 @@ urlpatterns = [
     path('bulletins-groupe/', views.bulletins_groupe, name='bulletins_groupe'),
     path('resultat-groupe/', views.resultat_groupe, name='resultat_groupe'),
     path('resultat-annuel-groupe/', views.resultat_annuel, name='resultat_annuel'),
+   path('valider-bulletin-trimestre/', views.valider_bulletin_trimestre, name='trimestre'),
+   path('valider-bulletin-annuel/', views.valider_bulletin_annuel, name='valider_bulletin'),
 ]
-

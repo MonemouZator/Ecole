@@ -1,0 +1,142 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>Paiement | Accueil</title>
+
+<!-- Google Font: Source Sans Pro -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- Font Awesome -->
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<!-- Theme style -->
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+<div class="content-wrapper">
+    <h2>Paiement du Salaire</h2>
+    
+    <form method="post" class="form">
+        {% csrf_token %}
+        
+        <div class="form-group row mb-3">
+            <div class="col-md-3 d-flex align-items-center">
+                <label for="enseignant" class="mr-2">Enseignant :</label>
+            </div>
+            <div class="col-md-3">
+                <select name="enseignant" required class="form-control">
+                    {% for enseignant in enseignants %}
+                        <option value="{{ enseignant.id }}">{{ enseignant.nom }} {{ enseignant.prenom }}</option>
+                    {% empty %}
+                        <option>Aucun enseignant trouvé</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3 d-flex align-items-center">
+                <label for="montant" class="mr-2">Montant :</label>
+            </div>
+            <div class="col-md-3">
+                <input type="number" name="montant" required class="form-control">
+            </div>
+        </div>
+
+        <div class="form-group row mb-3">
+            <div class="col-md-3 d-flex align-items-center">
+                <label for="date_paiement" class="mr-2">Date de Paiement :</label>
+            </div>
+            <div class="col-md-3">
+                <input type="date" name="date_paiement" required class="form-control">
+            </div>
+
+            <div class="col-md-3 d-flex align-items-center">
+                <label for="statut" class="mr-2">Statut :</label>
+            </div>
+            <div class="col-md-3">
+                <select name="statut" class="form-control">
+                    <option value="Payé">Payé</option>
+                    <option value="Non Payé">Non Payé</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+    </form>
+
+    <h3 class="mt-4">Historique des paiements</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Enseignant</th>
+                <th>Montant</th>
+                <th>Date</th>
+                <th>Statut</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for paiement in paiements %}
+            <tr>
+                <td>{{ paiement.enseignant.nom }} {{ paiement.enseignant.prenom }}</td>
+                <td>{{ paiement.montant }} GNF</td>
+                <td>{{ paiement.date_paiement }}</td>
+                <td>{{ paiement.statut }}</td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Aucun paiement trouvé</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+    $(function () {
+        $("#example1").DataTable({
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+        }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        $('#example2').DataTable({
+            "paging": true,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>Reçu de Paiement</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<style>
+    .header-section {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .header-section h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    .header-section h2 {
+        font-size: 18px;
+        font-weight: normal;
+        margin: 0;
+    }
+    .info-section {
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+    .info-section .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd; /* Ligne séparatrice */
+    }
+    .info-section .info-row strong {
+        font-weight: bold;
+    }
+    .details-table {
+        margin-top: 20px;
+    }
+    .details-table th, .details-table td {
+        text-align: center;
+        vertical-align: middle;
+    }
+    .print-button {
+        text-align: center;
+        margin-top: 20px;
+    }
+    @media print {
+        .print-button {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper container">
+    <!-- Header Section -->
+    <div class="header-section">
+        <h1>RÉPUBLIQUE DE GUINÉE</h1>
+        <h2>Travail - Justice - Solidarité</h2>
+    </div>
+
+    <div class="header-section">
+        <h1>GROUPE SCOLAIRE PRIVE BON NIVEAU DE BASE (BNB)</h1>
+        <h2>Union - Sincérité - Excellence</h2>
+    </div>
+
+    <!-- Informations Générales -->
+    <div class="info-section">
+        <div class="info-row">
+            <strong>Année Scolaire:</strong> <span>{{ recu.frais_scolarite.annee_scolaire }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Niveau:</strong> <span>{{ recu.frais_scolarite.eleve.niveau }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Eleve:</strong> <span>{{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</span>
+        </div>
+        
+        <div class="info-row">
+            <strong>Info Parents:</strong> 
+            
+            <span>{{ recu.frais_scolarite.eleve.pere }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Profession:</strong> <span>{{ recu.frais_scolarite.eleve.profession_pere }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Contact:</strong> <span>{{ recu.frais_scolarite.eleve.contact_parent }}</span>
+        </div>
+    </div>
+
+<center>
+     <p><strong></strong> {{ recu.details }}</p>
+
+</center>
+   
+    <!-- Détails des Paiements -->
+    <h3 class="text-center">Détails des Paiements</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered details-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Montant Payé</th>
+                    <th>Reste</th>
+                    <th>Montant Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ recu.date|date:"d/m/Y" }}</td>
+                    <td>{{ recu.montant }} GNF</td>
+                    <td>{{ recu.frais_scolarite.solde }} GNF</td>
+                    <td>{{ recu.frais_scolarite.montant_total }} GNF</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bouton Imprimer -->
+    <div class="print-button">
+        <button onclick="window.print()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

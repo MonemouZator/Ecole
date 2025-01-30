@@ -245,12 +245,48 @@
                       <p>Enseignants</p>
                   </a>
               </li>
-              <li class="nav-item">
-    <a href="{% url 'eleve' %}" class="nav-link">
-        <i class="far fa-circle nav-icon"></i>
-        <p>Eleve</p>
-    </a>
-</li>
+                <li class="nav-item">
+                    <a href="{% url 'eleve' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Eleve</p>
+                    </a>
+                </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'configuration' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Paiement eleve</p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{% url 'liste_eleves' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Payer</p>
+                    </a>
+                </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'paiement_salaire' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Salaire</p>
+                    </a>
+                </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'depense' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Depense</p>
+                    </a>
+                </li>
+
+                  <li class="nav-item">
+                    <a href="{% url 'bilan_financier' %}" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Finance</p>
+                    </a>
+                </li>
+
               <li class="nav-item">
                 <a href="{% url 'matiere' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
@@ -258,9 +294,23 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="{% url 'note' %}" class="nav-link">
+                <a href="{% url 'attribuer-notes' %}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Classe</p>
+                  <p>G.Notes</p>
+                </a>
+              </li>
+
+               <li class="nav-item">
+                <a href="{% url 'trimestre' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Creation</p>
+                </a>
+              </li>
+
+               <li class="nav-item">
+                <a href="{% url 'valider_bulletin' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Validation</p>
                 </a>
               </li>
            

@@ -1,0 +1,57 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+    <title>Reçu de paiement</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block contenu %}
+<div class="container mt-4">
+    <div class="header-section text-center mb-4">
+        <h1>RÉPUBLIQUE DE GUINÉE</h1>
+        <h2>Travail - Justice - Solidarité</h2>
+    </div>
+
+    <div class="header-section text-center mb-4">
+        <h1>GSP/BNB (Bon Niveau de Base)</h1>
+        <h2>Union - Sincérité - Excellence</h2>
+    </div>
+
+    <h2 class="text-center">Reçu de paiement</h2>
+    
+    <p><strong>Nom de l'élève :</strong> {{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</p>
+    <p><strong>Année scolaire :</strong> {{ recu.frais_scolarite.annee_scolaire }}</p>
+    <p><strong>Parent :</strong> {{ recu.frais_scolarite.eleve.pere }}</p>
+    <p><strong>Profession :</strong> {{ recu.frais_scolarite.eleve.profession_pere }}</p>
+    <p><strong>Contact :</strong> {{ recu.frais_scolarite.eleve.contact_parent }}</p>
+    
+    <div class="details p-2 border bg-light">{{ recu.details }}</div>
+    
+    <div class="info-section mt-3 p-2 bg-light rounded">
+        <h3>Frais de scolarité :</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Montant total</th>
+                    <th>Montant payé</th>
+                    <th>Reste à payer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ recu.date_recu|date:"d/m/Y H:i" }}</td>
+                    <td>{{ recu.frais_scolarite.montant_total }} GNF</td>
+                    <td class="text-success font-weight-bold">{{ recu.montant }} GNF</td>
+                    <td class="text-danger font-weight-bold">{{ recu.frais_scolarite.solde }} GNF</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <button class="btn btn-success mt-3 d-print-none" onclick="window.print()">Imprimer ce reçu</button>
+</div>
+{% endblock %}

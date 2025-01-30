@@ -12,8 +12,9 @@ urlpatterns = [
     path('enseinant-modifier/',views.modifier,name='modifi-enseignant'),# Chemin de modification  des informations
      path('supprime/<pk>/',views.supprim,name='supprimer-enseignant'),
     path('detail/',views.detail_enseignant,name='detail'),
-
-
+    path('paiement/', views.paiement_salaire, name='paiement_salaire'),
+    path('depense/', views.ajouter_depense, name='depense'),
+    path('bilan-financier/', views.bilan_financier, name='bilan_financier'),
 
 
 

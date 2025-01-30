@@ -1,0 +1,80 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Reçu de Paiement</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+  <!-- Add DataTable CSS -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
+  
+{% endblock %}
+
+{% block body %}
+{% endblock body %}
+
+{% block contenu %}
+<div class="content-wrapper container">
+<h2>Attribuer une note à {{ eleve.nom }} {{ eleve.prenom }}</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <label for="matiere">Matière :</label>
+    <select id="matiere" name="matiere" required>
+        <option value="">-- Sélectionnez une matière --</option>
+        {% for matiere in matieres %}
+        <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="annee_scolaire">Année Scolaire :</label>
+    <select id="annee_scolaire" name="annee_scolaire" required>
+        <option value="">-- Sélectionnez une année scolaire --</option>
+        {% for annee in annees_scolaires %}
+        <option value="{{ annee.id }}">{{ annee.nom }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="note_cours">Note de cours :</label>
+    <input type="number" id="note_cours" name="note_cours" step="0.01" min="0" max="20" required>
+
+    <label for="note_comp">Note de compétence :</label>
+    <input type="number" id="note_comp" name="note_comp" step="0.01" min="0" max="20" required>
+
+    <label for="trimestre">Trimestre :</label>
+    <select id="trimestre" name="trimestre" required>
+        <option value="">-- Sélectionnez un trimestre --</option>
+        <option value="1">Trimestre 1</option>
+        <option value="2">Trimestre 2</option>
+        <option value="3">Trimestre 3</option>
+    </select>
+
+    <button type="submit">Attribuer</button>
+</form>
+{% endblock %}
+
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+  <!-- Add DataTable JS -->
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+  
+  <!-- Initialize DataTable -->
+  <script>
+      $(document).ready(function() {
+          $('#elevesTable').DataTable({
+              "paging": true,          // Enable pagination
+              "searching": true,       // Enable search
+              "ordering": true,        // Enable sorting
+              "info": true,            // Show info about rows
+              "lengthChange": true,    // Allow changing the number of records per page
+              "pageLength": 10         // Default number of records per page
+          });
+      });
+  </script>
+{% endblock %}
