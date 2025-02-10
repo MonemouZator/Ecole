@@ -1,9 +1,8 @@
 {% extends "Base/index.html" %}
 {% load static %}
- {% block styl_parent %}
+
+{% block styl_parent %}
   <title>enseignant | Accueil</title>
-
-
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
@@ -16,13 +15,9 @@
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
-
- {% block body %}
+{% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
-
-
-
+{% endblock body %}
 
 {% block contenu %}
   <!-- Content Wrapper. Contains page content -->
@@ -51,138 +46,132 @@
           <div class="col-12">
             <div class="card">
               <div class="card-header">
-                
-                
-                 <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
-                                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        Ajouter un niveau d'etude
-                      </button>
-        
-                      <!-- Modal -->
-                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                              <h5 class="modal-title" id="exampleModalLabel">Enregistrement des niveaux</h5>
-                        
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="{% url 'ajout-niveau' %}" method="post" class="row">
+                <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Ajouter un niveau d'etude
+                </button>
 
-                                      {% csrf_token %}
-
-                                <div class="form-group col-md-12">
-                                  <input type="hidden" value="{{cy.id}}" name="cy">
-                                  <label for="cy">Cycle :</label>
-                                  <select name="cy" class="form-control" id="cy">
-                                  <option value=""> selectioner un cycle</option>
-                                      {% for cy in cycles %}
-                                      <option value="{{cy.id}}">{{cy}}</option>
-                                      {% endfor %}
-                                  </select>
-                                </div>
-
-                                <div class="form-group col-md-12">
-                                  <label for="nom" class="col-form-label">Niveau d'etude:</label>
-                                  <input type="text" class="form-control" id="nom" name="nom" required placeholder="entrer le nom">
-                                </div>
-        
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                              <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header bg-primary">
+                        <h5 class="modal-title" id="exampleModalLabel">Enregistrement des niveaux</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
                       </div>
-               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                      <div class="modal-body">
+                        <form action="{% url 'ajout-niveau' %}" method="post" class="row">
+                          {% csrf_token %}
+                          <div class="form-group col-md-12">
+                            <input type="hidden" value="{{cy.id}}" name="cy">
+                            <label for="cy">Cycle :</label>
+                            <select name="cy" class="form-control" id="cy">
+                              <option value="">Selectionner un cycle</option>
+                              {% for cy in cycles %}
+                              <option value="{{cy.id}}">{{cy}}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+
+                          <div class="form-group col-md-12">
+                            <label for="nom" class="col-form-label">Niveau d'etude:</label>
+                            <input type="text" class="form-control" id="nom" name="nom" required placeholder="Entrer le nom">
+                          </div>
+
+                          <!-- Champ Frais Scolaires -->
+                          <div class="form-group col-md-12">
+                            <label for="frais_scolaires" class="col-form-label">Frais Scolaires:</label>
+                            <input type="number" class="form-control" id="frais_scolaires" name="frais_scolaires" required placeholder="Entrer les frais scolaires">
+                          </div>
+                             <!-- Bouton Enregistrer à l'intérieur du form -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+          </div>
+                        </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example2" class="table table-bordered table-hover">
                   <thead>
-                  <tr>
-                    <th>N°</th>
-                    <th>Cycle scolaire</th>
-                    <th>Niveau d'etude</th>
-                    <th>Actions</th>
-                  </tr>
+                    <tr>
+                      <th>N°</th>
+                      <th>Cycle scolaire</th>
+                      <th>Niveau d'etude</th>
+                      <th>Frais Scolaires</th>
+                      <th>Actions</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  {% for nive in niveaus  %}
-                    
-                 
-                  <tr>
-                    <td>
-                        {{nive.id}}
-                    </td>
-                    <td>
-                        {{nive.cycle}}
-                       
-                    </td>
-                    <td>
-                        {{nive.nom}}
-                    
-                    </td>
-                    <td>
-                    
-
-                 
-                   <a href="#" data-toggle="modal" data-target="#modifie{{ nive.id }}" title="Modifier">
-                      <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
-                  </a>
-                  
-                  <div class="modal fade" id="modifie{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                          <div class="modal-content">
+                    {% for nive in niveaus %}
+                    <tr>
+                      <td>{{nive.id}}</td>
+                      <td>{{nive.cycle}}</td>
+                      <td>{{nive.nom}}</td>
+                      <td>{{nive.montant_frais}} FGN</td>
+                      <td>
+                        <a href="#" data-toggle="modal" data-target="#modifie{{ nive.id }}" title="Modifier">
+                          <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                        </a>
+                        <div class="modal fade" id="modifie{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                            <div class="modal-content">
                               <div class="modal-header bg-primary text-white">
-                                  <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
-                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                      <span aria-hidden="true">&times;</span>
-                                  </button>
+                                <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
                               </div>
                               <div class="modal-body">
-                                  <form action="{% url 'modifi-niveau' %}" method="post" enctype="multipart/form-data" class="row">
-                                      {% csrf_token %}
-                                      
-
-                                <div class="form-group col-md-12">
-                                  <input type="hidden" value="{{cy.id}}" name="cy">
-                                  <label for="cy">Cycle scolaire:</label>
-                                  <select name="cy" class="form-control" id="cy">
-                                     {% for cy in cycles %}
-                                      <option value="{{ cy.id }}" {% if nive.id == cy %} checked {% endif %}>{{cy}}</option>
+                                <form action="{% url 'modifi-niveau' %}" method="post" enctype="multipart/form-data" class="row">
+                                  {% csrf_token %}
+                                  <div class="form-group col-md-12">
+                                    <input type="hidden" value="{{cy.id}}" name="cy">
+                                    <label for="cy">Cycle scolaire:</label>
+                                    <select name="cy" class="form-control" id="cy">
+                                      {% for cy in cycles %}
+                                      <option value="{{ cy.id }}" {% if nive.cycle.id == cy.id %} selected {% endif %}>{{cy}}</option>
                                       {% endfor %}
-                                  </select>
-                                </div>
+                                    </select>
+                                  </div>
 
-                                <div class="form-group col-md-12">
+                                  <div class="form-group col-md-12">
                                     <label for="nom" class="col-form-label">Niveau d'etude :</label>
                                     <input type="text" class="form-control" id="nom" name="nom" required value="{{ nive.nom }}">
-                                </div>
-                        
-                                <input type="hidden" name="id" value="{{ nive.id }}">
-                                <div class="modal-footer">
+                                  </div>
+
+                               
+
+                                  <!-- Champ Frais Scolaires -->
+                                  <div class="form-group col-md-12">
+                                    <label for="frais_scolaires" class="col-form-label">Frais Scolaires (FGN):</label>
+                                    <input type="float" class="form-control" id="frais_scolaires" name="frais_scolaires" required value="{{ nive.montant_frais }}">
+                                  </div>
+
+                                  <input type="hidden" name="id" value="{{ nive.id }}">
+                                  <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Modifier</button>
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                </div>
-                    
-                                  </form>
+                                  </div>
+                                </form>
                               </div>
-                                    
-                              </div>
+                            </div>
                           </div>
-                      </div>
-                  </div>
-                  
-                         <!-- Début de la fenêtre modale de suppression -->
-                    <a href="#" data-toggle="modal" data-target="#supprime{{ nive.id }}" title="Supprimer">
+                        </div>
+
+                               <a href="#" data-toggle="modal" data-target="#supprime{{ nive.id }}" title="Supprimer">
                         <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
                     </a>
 
+                      <!-- Début de la fenêtre modale de suppression -->
                       <div class="modal fade" id="supprime{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                           <div class="modal-dialog" role="document">
                               <div class="modal-content">
@@ -193,11 +182,11 @@
                                       </button>
                                   </div>
                                   <div class="modal-body">
-                                      <form action="{% url 'supprimer-niveau' nive.id %}" method="post" class="row">
+                                      <form action="{% url 'supprimer-niveau' pk=nive.id %}" method="post" class="row">
                                           {% csrf_token %}
                                           <p>
-                                              Voulez-vous vraiment supprimer les informations de :
-                                              <span class="text-primary">{{ nive.nom }}</span> ?
+                                              Voulez-vous vraiment supprimer cette ligne ?{{nive.nom}}
+                                              
                                           </p>
                                   </div>
                                   <div class="modal-footer">
@@ -209,19 +198,15 @@
                           </div>
                       </div>
                       <!-- Fin de la fenêtre modale de suppression -->
-                    
-                    </td>
-                  </tr>
-                  {% endfor %}
+
+                      </td>
+                    </tr>
+                    {% endfor %}
                   </tbody>
-                 
                 </table>
               </div>
               <!-- /.card-body -->
             </div>
-            <!-- /.card -->
-
-
             <!-- /.card -->
           </div>
           <!-- /.col -->
@@ -235,17 +220,12 @@
   <!-- /.content-wrapper -->
 {% endblock %}
 
-  
-
-  
 {% block scripte %}
-
-
 <!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
+<!-- DataTables & Plugins -->
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -279,5 +259,4 @@
       "responsive": true,
     });
   });
-</script>
-{% endblock %}
+{%endblock%}

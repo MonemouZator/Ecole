@@ -1,7 +1,7 @@
 from django.db import models
 from matiere.models import Matiere
 from django.utils import timezone
-
+from annee_scolaire.models import AnneeScolaire
 class Enseignant(models.Model):
         
 
@@ -27,7 +27,7 @@ class PaiementSalaire(models.Model):
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     date_paiement = models.DateField(default=timezone.now)
     statut = models.CharField(max_length=20, choices=[('Payé', 'Payé'), ('Non Payé', 'Non Payé')], default='Non Payé')
-    
+    annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)  # Relation avec l'année scolaire
     def __str__(self):
         return f"Paiement de {self.montant} pour {self.enseignant.nom} {self.enseignant.prenom} ({self.statut})"
     
@@ -44,6 +44,6 @@ class Depense(models.Model):
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     date_depense = models.DateField(default=timezone.now)
     categorie = models.CharField(max_length=50, choices=CATEGORIES_DEPENSES, default='Autre')
-
+    annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)  # Relation avec l'année scolaire
     def __str__(self):
         return f"{self.description} - {self.montant} GNF ({self.categorie})"

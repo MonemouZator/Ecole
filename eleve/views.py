@@ -51,8 +51,6 @@ def forme_modifie(request):
     return render(request,'eleve/ajout_modifier.html',context)
 
 
-
-
 def ajout(request):
     if request.method == 'POST':
         niveau = request.POST.get('nive')
@@ -97,36 +95,157 @@ def ajout(request):
             contact_parent=contact_pere
         )
 
-        # Récupération des frais de scolarité
-        niveau_obj = get_object_or_404(Niveau, id=niveau)
-        montant_total = niveau_obj.montant_frais
-        tranche1 = montant_total / 2
-        tranche2 = montant_total / 2
+        # Vérification des frais de scolarité pour l'élève
+        frais_scolarite = FraisScolarite.objects.filter(eleve=eleve, annee_scolaire=eleve.annee_scolaire).first()
 
-        # Création des frais de scolarité
-        frais_scolarite = FraisScolarite.objects.create(
-            eleve=eleve,
-            annee_scolaire=eleve.annee_scolaire.nom,
-            tranche1=tranche1,
-            tranche2=tranche2,
-            montant_total=montant_total,
-            solde=tranche2  # Le solde est la deuxième tranche
-        )
+        if not frais_scolarite:
+            # Calcul du montant des frais
+            niveau_obj = get_object_or_404(Niveau, id=niveau)
+            montant_total = niveau_obj.montant_frais
+            tranche1 = montant_total / 2
+            tranche2 = montant_total / 2
 
-        # Création du reçu pour la première tranche
-        recu = Recu.objects.create(
-            frais_scolarite=frais_scolarite,
-            montant=tranche1,
-            details=f"Premier paiement des frais de scolarité pour l'année scolaire {eleve.annee_scolaire.nom}"
-        )
+            # Création des frais de scolarité pour l'élève
+            frais_scolarite = FraisScolarite.objects.create(
+                eleve=eleve,
+                annee_scolaire=eleve.annee_scolaire.nom,
+                tranche1=tranche1,
+                tranche2=tranche2,
+                montant_total=montant_total,
+                solde=tranche2,  # Le solde initial est la deuxième tranche
+                paye_tranche1=True,  # Première tranche payée lors de l'enregistrement
+                paye_tranche2=False  # Deuxième tranche non payée
+            )
 
-        # Message de succès
-        messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès et le premier paiement a été effectué.")
+            # Création du reçu pour le premier paiement
+            recu = Recu.objects.create(
+                frais_scolarite=frais_scolarite,
+                montant=frais_scolarite.tranche1,
+                details=f"Premier paiement des frais de scolarité pour l'année scolaire {eleve.annee_scolaire.nom}"
+            )
 
-        # Redirection vers une page d'affichage du reçu
-        return redirect('afficher_recu', recu_id=recu.id)
+            # Message de succès
+            messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès et le premier paiement a été effectué.")
+
+            # Redirection vers la page d'affichage du reçu
+            return redirect('afficher_recu', recu_id=recu.id)
+        else:
+            messages.error(request, "Les frais de scolarité existent déjà pour cet élève.")
+            return redirect('eleve')
     else:
-        return render(request, 'eleve/ajout.html')
+        return render(request, 'eleve/eleve.html')
+
+# Ajout de la vue pour le paiement de la deuxième tranche
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Eleve, FraisScolarite, Recu
+
+def paiement_tranche2(request, eleve_id):
+    # Récupérer l'élève et ses frais scolaires pour l'année scolaire actuelle
+    eleve = get_object_or_404(Eleve, id=eleve_id)
+    frais_scolarite = get_object_or_404(FraisScolarite, eleve=eleve, annee_scolaire=eleve.annee_scolaire)
+
+    # Vérifier si la deuxième tranche a déjà été payée
+    if frais_scolarite.paye_tranche2:
+        messages.error(request, "La deuxième tranche a déjà été payée.")
+        return redirect('afficher_frais', eleve_id=eleve.id)
+
+    # Si la deuxième tranche n'est pas encore payée, on effectue le paiement
+    frais_scolarite.paye_tranche2 = True
+    frais_scolarite.solde = 0  # Le solde devient 0 après le paiement de la deuxième tranche
+    frais_scolarite.save()
+
+    # Création du reçu pour le paiement de la deuxième tranche
+    recu = Recu.objects.create(
+        frais_scolarite=frais_scolarite,
+        montant=frais_scolarite.tranche2,
+        details=f"Deuxième paiement des frais de scolarité pour l'année scolaire {eleve.annee_scolaire.nom}"
+    )
+
+    # Message de succès pour informer l'utilisateur
+    messages.success(request, f"La deuxième tranche a été payée pour {eleve.prenom} {eleve.nom}.")
+    
+    # Rediriger vers la page du reçu pour afficher les détails
+    return redirect('afficher_recu', recu_id=recu.id)
+
+
+
+
+
+
+
+
+
+def afficher_recu(request, recu_id):
+    """Afficher le reçu pour le paiement effectué."""
+    recu = get_object_or_404(Recu, id=recu_id)
+
+    # Vérifier si le paiement complet est effectué
+    frais = recu.frais_scolarite
+    if frais.solde == 0:
+        paiement_statut = "Frais entièrement payés"
+    elif frais.est_paye_tranche2:
+        paiement_statut = "Deuxième tranche payée"
+    else:
+        paiement_statut = "En attente de la deuxième tranche"
+
+    context = {
+        'recu': recu,
+        'paiement_statut': paiement_statut,
+    }
+
+    return render(request, 'eleve/afficher_recu.html', context)
+
+
+# def payer_tranche1(request, eleve_id):
+#     """Payer la première tranche des frais de scolarité."""
+#     eleve = get_object_or_404(Eleve, id=eleve_id)
+#     frais_scolarite = get_object_or_404(FraisScolarite, eleve=eleve)
+
+#     # Vérifier si la première tranche a déjà été payée
+#     if frais_scolarite.total_paye == 0:
+#         frais_scolarite.payer_tranche1()
+#         messages.success(request, "La première tranche a été payée avec succès.")
+#         return redirect('afficher_recu', recu_id=frais_scolarite.recu_set.first().id)
+#     else:
+#         messages.error(request, "La première tranche a déjà été payée.")
+#         return redirect('eleve_detail', eleve_id=eleve.id)
+
+
+# def payer_tranche2(request, eleve_id):
+#     """Payer la deuxième tranche des frais de scolarité."""
+#     eleve = get_object_or_404(Eleve, id=eleve_id)
+#     frais_scolarite = get_object_or_404(FraisScolarite, eleve=eleve)
+
+#     if frais_scolarite.total_paye >= frais_scolarite.tranche1 and frais_scolarite.solde > 0:
+#         frais_scolarite.payer_tranche2()
+#         messages.success(request, "La deuxième tranche a été payée avec succès.")
+#         return redirect('afficher_recu', recu_id=frais_scolarite.recu_set.last().id)
+#     else:
+#         messages.error(request, "La première tranche doit être payée avant de régler la deuxième.")
+#         return redirect('eleve_detail', eleve_id=eleve.id)
+
+
+def afficher_recu(request, recu_id):
+    """Afficher le reçu pour le paiement effectué."""
+    recu = get_object_or_404(Recu, id=recu_id)
+
+    # Vérifier si le paiement complet est effectué
+    frais = recu.frais_scolarite
+    if frais.solde == 0:
+        paiement_statut = "Frais entièrement payés"
+    elif frais.est_paye_tranche2:
+        paiement_statut = "Deuxième tranche payée"
+    else:
+        paiement_statut = "En attente de la deuxième tranche"
+
+    context = {
+        'recu': recu,
+        'paiement_statut': paiement_statut,
+    }
+
+    return render(request, 'eleve/afficher_recu.html', context)
+
     
 #AFFICHARGE DES RECUS 
 def afficher_recu(request, recu_id):
@@ -134,60 +253,81 @@ def afficher_recu(request, recu_id):
         return render(request, 'eleve/afficher.html', {'recu': recu})
 
 #FONCTION DE MODIFICATION
-def modifier(request):
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Eleve, Niveau, GroupeClasse, AnneeScolaire
 
-    if request.method=='POST':
-        niveau=request.POST.get('nive')
-        groups=request.POST.get('group')
-        annee=request.POST.get('anne')
-        nom=request.POST.get('nom')
-        prenom=request.POST.get('prenom')
-        genre=request.POST.get('sexe')
-        contact=request.POST.get('contact')
-        photo=request.POST.get('photo')
-        naissance=request.POST.get('date')
-        lieu=request.POST.get('lieu')
-        pere=request.POST.get('pere')
-        fonction_pere=request.POST.get('fp')
-        contact_pere=request.POST.get('cp')
-        mere=request.POST.get('mere')
-        fonction_mere=request.POST.get('fm')
-        cm=request.POST.get('cm')
-    
-       
-        pk=request.POST.get('id')
-        eleve=get_object_or_404(Eleve,id=pk)
-        
-        eleve.niveau=get_object_or_404(Niveau,id=niveau)
-        eleve.groupe_classe=get_object_or_404(GroupeClasse,id=groups)
-        eleve.annee_scolaire=get_object_or_404(AnneeScolaire,id=annee)
-        eleve.nom=nom
-        eleve.prenom=prenom
-        eleve.date_naissance=naissance
-        eleve.genre=genre
-        eleve.telephone=contact
-        eleve.lieu_naissance=lieu
-        eleve.photo=photo
-        eleve.Contact_mere=cm
-        eleve.mere=mere
-        eleve.profession_mere=fonction_mere
-        eleve.profession_pere=fonction_pere
-        eleve.pere=pere
-        eleve.Contact_parent=contact_pere
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Eleve, Niveau, GroupeClasse, AnneeScolaire
 
+def modifier(request, pk):
+    # Récupérer l'élève à modifier
+    eleve = get_object_or_404(Eleve, pk=pk)
 
+    if request.method == 'POST':
+        # Récupérer les données du formulaire
+        niveau_id = request.POST.get('niveau')
+        groupe_classe_id = request.POST.get('groupe_classe')
+        annee_scolaire_id = request.POST.get('annee_scolaire')
+
+        # Validation des relations avec les modèles
+        try:
+            niveau = get_object_or_404(Niveau, id=int(niveau_id)) if niveau_id else None
+            groupe_classe = get_object_or_404(GroupeClasse, id=int(groupe_classe_id)) if groupe_classe_id else None
+            annee_scolaire = get_object_or_404(AnneeScolaire, id=int(annee_scolaire_id)) if annee_scolaire_id else None
+        except ValueError:
+            messages.error(request, "Les valeurs des champs sont incorrectes.")
+            return redirect('modifier_eleve', pk=pk)
+        except Exception as e:
+            messages.error(request, f"Une erreur est survenue : {str(e)}")
+            return redirect('modifier_eleve', pk=pk)
+
+        # Mettre à jour les informations de l'élève
+        eleve.niveau = niveau
+        eleve.groupe_classe = groupe_classe
+        eleve.annee_scolaire = annee_scolaire  # ✅ Correctement assigné
+
+        eleve.nom = request.POST.get('nom')
+        eleve.prenom = request.POST.get('prenom')
+        eleve.date_naissance = request.POST.get('date_naissance')
+        eleve.lieu_naissance = request.POST.get('lieu_naissance')
+        eleve.genre = request.POST.get('genre')
+        eleve.telephone = request.POST.get('telephone')
+        eleve.pere = request.POST.get('pere')
+        eleve.profession_pere = request.POST.get('profession_pere')
+        eleve.contact_parent = request.POST.get('contact_parent')
+        eleve.mere = request.POST.get('mere')
+        eleve.profession_mere = request.POST.get('profession_mere')
+        eleve.contact_mere = request.POST.get('contact_mere')
+
+        # Si une nouvelle photo est téléchargée, l'associer à l'élève
+        photo = request.FILES.get('photo')
+        if photo:
+            eleve.photo = photo
+
+        # Sauvegarder les changements
         eleve.save()
 
-        return redirect('eleve')
+        # Ajouter un message de succès
+        messages.success(request, "Les informations de l'élève ont été mises à jour avec succès.")
+        return redirect('eleve')  # Rediriger vers la liste des élèves
     else:
-            return redirect('eleve')
-    
-    #FONCTION DE SUPPRESSION DES INFORMATIONS
+        # Si la méthode n'est pas POST, afficher le formulaire avec les données actuelles
+        niveaux = Niveau.objects.all()
+        groupes = GroupeClasse.objects.all()
+        annees_scolaires = AnneeScolaire.objects.all()
+        context = {
+            'eleve': eleve,
+            'niveaux': niveaux,
+            'groupes': groupes,
+            'annees_scolaires': annees_scolaires,
+        }
+        print(f"Année scolaire de l'élève: {eleve.annee_scolaire}")
+
+        return render(request, 'eleve/modifier_eleve.html', context)
 
 
-
-
-     #FONCTION DE SUPPRESSION DES INFORMATIONS
+#FONCTION DE SUPPRESSION DES INFORMATIONS
 
 def  supprimer(request,pk):
     eleve=get_object_or_404(Eleve,id=pk)
@@ -240,7 +380,9 @@ from django.shortcuts import redirect
 def payer_tranche2(request, eleve_id):
     """Vue pour effectuer le paiement de la deuxième tranche et afficher le reçu."""
     eleve = get_object_or_404(Eleve, id=eleve_id)
-    frais = FraisScolarite.objects.filter(eleve=eleve, annee_scolaire=eleve.annee_scolaire.nom).first()
+    
+    # Accès direct à l'objet AnneeScolaire associé à l'élève
+    frais = FraisScolarite.objects.filter(eleve=eleve, annee_scolaire=eleve.annee_scolaire).first()
 
     if not frais:
         return render(request, 'eleve/recu_paiement.html', {'message': "Aucun frais trouvé pour cet élève."})
@@ -262,11 +404,9 @@ def payer_tranche2(request, eleve_id):
 
     return render(request, 'eleve/recu_paiement.html', {'message': "Le paiement de la deuxième tranche a déjà été effectué."})
 
+
+
 #AFFICHER LES ELEVES QUI ON PAYER LA TOTALITE DES FRAIS DE SCOLARITE
-
-from django.shortcuts import render
-from .models import Eleve, FraisScolarite, Niveau, GroupeClasse, AnneeScolaire
-
 def liste_eleves(request):
     # Récupérer tous les niveaux, groupes et années scolaires pour les filtres
     niveaux = Niveau.objects.all()
@@ -316,3 +456,14 @@ def liste_eleves(request):
         'request': request
     })
 
+
+
+#DETAILS eleve
+
+from django.shortcuts import render, get_object_or_404
+from .models import Eleve
+
+def eleve_detail(request, pk):
+    # Récupérer l'élève avec l'ID passé en paramètre
+    eleve = get_object_or_404(Eleve, id=pk)
+    return render(request, 'eleve/detail.html', {'eleve': eleve})

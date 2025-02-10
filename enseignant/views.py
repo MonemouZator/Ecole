@@ -1,5 +1,20 @@
 from django.shortcuts import render,redirect,get_object_or_404
-from enseignant.models import Enseignant
+from enseignant.models import Enseignant,PaiementSalaire
+from django.shortcuts import render, redirect
+from .models import Depense
+from django.contrib import messages
+
+from eleve .models import Eleve , FraisScolarite
+from annee_scolaire.models import AnneeScolaire
+from django.db.models import Sum
+from django.db import models  # Importation de models
+
+
+
+
+
+##################### LISTE DES ENSEIGNANTS ###################################
+
 def maitre(request):
         
         enseignants=Enseignant.objects.all()
@@ -9,7 +24,8 @@ def maitre(request):
                 }
         return render(request, 'base/pages/tables/data.html',context)
 
-# FONCTION D'ENREGISTREMENT DES ENSEIGNANTS
+
+################## FONCTION D'ENREGISTREMENT DES ENSEIGNANTS ####################
 
 def ajout(request):
     if request.method=="POST": 
@@ -41,8 +57,10 @@ def ajout(request):
             return redirect('enseignant')
     else:
         return redirect('enseignant')
+
+
     
-    #FONCTION DE MODIFICATION DES INFORMATIONS
+####################### FONCTION DE MODIFICATION DES INFORMATIONS ######################
 
 def modifier(request):
     if request.method=='POST':
@@ -74,8 +92,9 @@ def modifier(request):
         return redirect('enseignant')
     else:
         return redirect('enseignant')
+
     
-    #FONCTION DE SUPPRESSION DES INFORMATIONS
+##################FONCTION DE SUPPRESSION DES INFORMATIONS#####################
 
 def  supprim(request,pk):
     enseignant=get_object_or_404(Enseignant,id=pk)
@@ -87,125 +106,164 @@ def detail_enseignant(request):
      
      return render(request,'enseignant/enseignant.html')
 
-#PAIEMENT DES SALAIRES
-from django.shortcuts import render, redirect
-from .models import PaiementSalaire, Depense, Enseignant
-from django.utils import timezone
 
-# Payer un enseignant (sans ModelForm)
+
+#########################PAIEMENT DES SALAIRES#################################
+
 def paiement_salaire(request):
     enseignants = Enseignant.objects.all()  # Récupérer tous les enseignants
     paiements = PaiementSalaire.objects.all()  # Récupérer tous les paiements
+    annees_scolaires = AnneeScolaire.objects.all()  # Récupérer toutes les années scolaires
 
     if request.method == 'POST':
         enseignant_id = request.POST.get('enseignant')
         montant = request.POST.get('montant')
         date_paiement = request.POST.get('date_paiement')
         statut = request.POST.get('statut')
+        annee_scolaire_id = request.POST.get('annee_scolaire')
 
         # Vérification que tous les champs sont fournis
-        if enseignant_id and montant and date_paiement:
+        if enseignant_id and montant and date_paiement and annee_scolaire_id:
             try:
                 enseignant = Enseignant.objects.get(id=enseignant_id)  # Récupérer l'enseignant
-                # Ajouter le paiement si l'enseignant existe
+                annee_scolaire = AnneeScolaire.objects.get(id=annee_scolaire_id)  # Récupérer l'année scolaire
+
+                # Calcul des entrées et sorties pour l'année scolaire
+                total_entrées = FraisScolarite.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant_total'))['total'] or 0
+                total_sorties_salaire = PaiementSalaire.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant'))['total'] or 0
+                total_sorties_depense = Depense.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant'))['total'] or 0
+                total_sorties = total_sorties_salaire + total_sorties_depense
+                solde = total_entrées - total_sorties
+
+                # Vérification du solde avant de procéder à l'enregistrement
+                if solde <= 0:
+                    messages.error(request, "Le solde est insuffisant pour enregistrer ce paiement.")
+                    return redirect('paiement_salaire')  # Remplacez par l'URL ou le nom de la vue approprié
+
+                # Ajouter le paiement si le solde est suffisant
                 PaiementSalaire.objects.create(
                     enseignant=enseignant,
                     montant=montant,
                     date_paiement=date_paiement,
                     statut=statut,
+                    annee_scolaire=annee_scolaire,
                 )
                 messages.success(request, "Paiement effectué avec succès.")
-                # Rediriger pour éviter la soumission répétée lors de l'actualisation
-                return redirect('paiement_salaire')  # Remplacez par l'URL ou le nom de la vue approprié
+                return redirect('paiement_salaire')
 
             except Enseignant.DoesNotExist:
                 messages.error(request, "L'enseignant sélectionné n'existe pas.")
+            except AnneeScolaire.DoesNotExist:
+                messages.error(request, "L'année scolaire sélectionnée n'existe pas.")
         else:
             messages.error(request, "Veuillez remplir tous les champs obligatoires.")
 
     return render(request, 'enseignant/paiement_salaire.html', {
         'enseignants': enseignants,
         'paiements': paiements,
+        'annees_scolaires': annees_scolaires,
     })
 
 
-# Ajouter une dépense (sans ModelForm)
-from django.shortcuts import render, redirect
-from django.contrib import messages  # Pour afficher des messages
-from .models import Depense
 
-# views.py
-from django.contrib import messages
+################ Ajouter une dépense (sans ModelForm)#############################
 
-from django.shortcuts import render, redirect
-from .models import Depense
-from django.contrib import messages
+
 
 def ajouter_depense(request):
-    if request.method == "POST":
-        description = request.POST.get("description")
-        montant = request.POST.get("montant")
-        date_depense = request.POST.get("date_depense")
+    annees_scolaires = AnneeScolaire.objects.all()  # Récupérer toutes les années scolaires
+    depenses = Depense.objects.all()  # Récupérer toutes les dépenses pour les afficher
 
-        if description and montant and date_depense:
-            # Créer une nouvelle dépense
-            Depense.objects.create(
-                description=description,
-                montant=montant,
-                date_depense=date_depense
-            )
-            messages.success(request, "Dépense ajoutée avec succès !")
-            # Après avoir ajouté la dépense, rediriger pour éviter le renvoi du formulaire
-            return redirect('depense')  # Redirection vers la même vue 'depense'
+    if request.method == 'POST':
+        montant = request.POST.get('montant')
+        description = request.POST.get('description')
+        annee_scolaire_id = request.POST.get('annee_scolaire')
 
-    # Récupérer les dépenses déjà enregistrées
-    depenses = Depense.objects.all()
-    return render(request, 'enseignant/depense.html', {'depenses': depenses})
+        if montant and description and annee_scolaire_id:
+            try:
+                annee_scolaire = AnneeScolaire.objects.get(id=annee_scolaire_id)  # Récupérer l'année scolaire
+
+                # Calcul des entrées et sorties pour l'année scolaire
+                total_entrées = FraisScolarite.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant_total'))['total'] or 0
+                total_sorties_salaire = PaiementSalaire.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant'))['total'] or 0
+                total_sorties_depense = Depense.objects.filter(annee_scolaire=annee_scolaire).aggregate(total=models.Sum('montant'))['total'] or 0
+                total_sorties = total_sorties_salaire + total_sorties_depense
+                solde = total_entrées - total_sorties
+
+                # Afficher les valeurs pour le débogage
+                print(f"Total Entrées: {total_entrées}")
+                print(f"Total Sorties Salaire: {total_sorties_salaire}")
+                print(f"Total Sorties Dépense: {total_sorties_depense}")
+                print(f"Solde: {solde}")
+
+                # Vérification du solde avant d'enregistrer la dépense
+                if solde <= 0:
+                    messages.error(request, "Le solde est insuffisant pour enregistrer cette dépense.")
+                    return redirect('depense')
+
+                # Ajouter la dépense si le solde est suffisant
+                Depense.objects.create(
+                    montant=montant,
+                    description=description,
+                    annee_scolaire=annee_scolaire,
+                )
+                messages.success(request, "Dépense enregistrée avec succès.")
+                return redirect('depense')
+
+            except AnneeScolaire.DoesNotExist:
+                messages.error(request, "L'année scolaire sélectionnée n'existe pas.")
+        else:
+            messages.error(request, "Veuillez remplir tous les champs obligatoires.")
+
+    return render(request, 'enseignant/depense.html', {
+        'annees_scolaires': annees_scolaires,
+        'depenses': depenses,  # Assurez-vous de passer les dépenses au template
+    })
 
 
-   
-# Liste des paiements
-def liste_paiements(request):
-    paiements = PaiementSalaire.objects.all()
-    return render(request, 'enseignant/liste_paiements.html', {'paiements': paiements})
 
-# Liste des dépenses
-def liste_depenses(request):
-    depenses = Depense.objects.all()
-    return render(request, 'enseignant/liste_depenses.html', {'depenses': depenses})
+##############################LE BILAN FINANCIER ###################################
 
-
-from django.shortcuts import render
-from eleve .models import Eleve, FraisScolarite
 
 def bilan_financier(request):
-    # Calcul des entrées : somme des frais de scolarité des élèves
-    total_entrees = 0
-    for eleve in Eleve.objects.all():
-        # Accéder à l'objet FraisScolarite lié à l'élève
-        frais_scolarite = FraisScolarite.objects.filter(eleve=eleve).first()
-        if frais_scolarite:
-            total_entrees += frais_scolarite.montant_total
+    # Récupérer toutes les années scolaires disponibles
+    annees_scolaires = AnneeScolaire.objects.all()
 
-    # Calcul des sorties :
-    # Total des dépenses
-    total_depenses = sum(depense.montant for depense in Depense.objects.all())
-    
-    # Total des paiements de salaires
-    total_salaires = sum(paiement.montant for paiement in PaiementSalaire.objects.all())
+    # Initialiser les variables de contexte
+    total_entrées = 0
+    total_sorties = 0
+    solde = 0
 
-    # Total des sorties = total des dépenses + total des paiements de salaires
-    total_sorties = total_depenses + total_salaires
+    # Récupérer l'année scolaire sélectionnée par l'utilisateur, si disponible
+    annee_scolaire = None
+    selected_annee_id = None
+    if 'annee_scolaire' in request.GET:
+        selected_annee_id = request.GET['annee_scolaire']
+        annee_scolaire = AnneeScolaire.objects.filter(id=selected_annee_id).first()
 
-    # Calcul du solde : Entrées - Sorties
-    solde = total_entrees - total_sorties
+        if annee_scolaire:
+            # Calculer les entrées (frais scolaires payés)
+            frais_scolaires = FraisScolarite.objects.filter(annee_scolaire=annee_scolaire)
+            total_entrées = sum(frais.total_paye for frais in frais_scolaires)  # Utiliser total_paye
+
+            # Calculer les sorties (salaires et dépenses)
+            salaires = PaiementSalaire.objects.filter(annee_scolaire=annee_scolaire)
+            depenses = Depense.objects.filter(annee_scolaire=annee_scolaire)
+
+            total_sorties = sum(salaire.montant for salaire in salaires) + sum(depense.montant for depense in depenses)
+
+            # Calculer le solde net
+            solde = total_entrées - total_sorties
+        else:
+            messages.error(request, "L'année scolaire sélectionnée n'est pas valide.")
 
     context = {
-        'total_entrees': total_entrees,
-        'total_depenses': total_depenses,
-        'total_salaires': total_salaires,
+        'annees_scolaires': annees_scolaires,
+        'selected_annee_id': selected_annee_id,
+        'total_entrées': total_entrées,
         'total_sorties': total_sorties,
         'solde': solde,
+        'annee_scolaire': annee_scolaire,
     }
 
     return render(request, 'enseignant/bilan_financier.html', context)

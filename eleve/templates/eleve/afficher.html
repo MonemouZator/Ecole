@@ -9,28 +9,36 @@
 {% endblock %}
 
 {% block contenu %}
-<div class="container mt-4">
-    <div class="header-section text-center mb-4">
-        <h1>RÉPUBLIQUE DE GUINÉE</h1>
+<div class="content-wrapper container">
+    <!-- Section d'entête -->
+    <div class="header-section text-center mb-5">
+        <h1 class="font-weight-bold">RÉPUBLIQUE DE GUINÉE</h1>
         <h2>Travail - Justice - Solidarité</h2>
     </div>
 
-    <div class="header-section text-center mb-4">
-        <h1>GSP/BNB (Bon Niveau de Base)</h1>
+    <div class="header-section text-center mb-5">
+        <h1 class="font-weight-bold">GSP/BNB (Bon Niveau de Base)</h1>
         <h2>Union - Sincérité - Excellence</h2>
     </div>
 
-    <h2 class="text-center">Reçu de paiement</h2>
+    <h2 class="text-center mb-4">Reçu de paiement</h2>
+
+    <!-- Informations sur l'élève et le parent -->
+    <div class="mb-4">
+        <p><strong>Nom de l'élève :</strong> {{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</p>
+        <p><strong>Année scolaire :</strong> {{ recu.frais_scolarite.annee_scolaire }}</p>
+        <p><strong>Parent :</strong> {{ recu.frais_scolarite.eleve.pere }}</p>
+        <p><strong>Profession :</strong> {{ recu.frais_scolarite.eleve.profession_pere }}</p>
+        <p><strong>Contact :</strong> {{ recu.frais_scolarite.eleve.contact_parent }}</p>
+    </div>
     
-    <p><strong>Nom de l'élève :</strong> {{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</p>
-    <p><strong>Année scolaire :</strong> {{ recu.frais_scolarite.annee_scolaire }}</p>
-    <p><strong>Parent :</strong> {{ recu.frais_scolarite.eleve.pere }}</p>
-    <p><strong>Profession :</strong> {{ recu.frais_scolarite.eleve.profession_pere }}</p>
-    <p><strong>Contact :</strong> {{ recu.frais_scolarite.eleve.contact_parent }}</p>
+    <!-- Détails supplémentaires -->
+    <div class="details p-3 border bg-light mb-4">
+        {{ recu.details }}
+    </div>
     
-    <div class="details p-2 border bg-light">{{ recu.details }}</div>
-    
-    <div class="info-section mt-3 p-2 bg-light rounded">
+    <!-- Section des frais de scolarité -->
+    <div class="info-section mt-3 p-3 bg-light rounded">
         <h3>Frais de scolarité :</h3>
         <table class="table table-bordered">
             <thead>
@@ -52,6 +60,7 @@
         </table>
     </div>
     
+    <!-- Bouton pour imprimer -->
     <button class="btn btn-success mt-3 d-print-none" onclick="window.print()">Imprimer ce reçu</button>
 </div>
 {% endblock %}

@@ -16,6 +16,58 @@
         color: #333;
     }
 
+    .container {
+        max-width: auto;
+    }
+
+    h2 {
+        color: #343a40;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #2C3E50;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .form-select {
+        background-color: #ffffff;
+        border: 1px solid #dcdcdc;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        transition: border-color 0.3s;
+    }
+
+    .form-select:focus {
+        border-color: #16A085;
+        box-shadow: 0 0 8px rgba(22, 160, 133, 0.3);
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background-color: #16A085;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #1abc9c;
+    }
+
     .bilan-container {
         width: 90%;
         max-width: 1200px;
@@ -34,7 +86,6 @@
     }
 
     h2 {
-        color: #ffffff;
         font-size: 1.5rem;
         margin-bottom: 10px;
     }
@@ -47,10 +98,6 @@
     strong {
         font-size: 1.3rem;
         color: #16A085;
-    }
-
-    .bilan-container div {
-        margin-bottom: 30px;
     }
 
     .total, .result {
@@ -126,6 +173,11 @@
             font-size: 1.2rem;
         }
     }
+
+    /* Pour les libellés en blanc */
+    .libelle-blanc {
+        color: white;
+    }
   </style>
 {% endblock %}
 
@@ -133,45 +185,52 @@
   <!-- Contenu de la page spécifique -->
 {% endblock %}
 
-
 {% block contenu %}
-   <div class="content-wrapper container">
-    <h1>Bilan Financier de l'École</h1>
+    <div class="content-wrapper container">
+        <h1>Bilan Financier de l'École</h1>
 
-    <div class="bilan-container">
-        <!-- Entrées -->
-        <div class="card card-entree">
-            <h2><strong>Total des Entrées </strong></h2>
-            <p> <span class="total">{{ total_entrees }} GNF</span></p>
-        </div>
+                <!-- Formulaire de sélection d'année scolaire -->
+                <form method="get" action="{% url 'bilan_financier' %}" class="mb-4">
+                    <div class="form-group">
+                        <label for="annee_scolaire" class="form-label">Choisir une Année Scolaire</label>
+                        <select name="annee_scolaire" id="annee_scolaire" class="form-select" required>
+                            {% if annees_scolaires %}
+                                {% for annee in annees_scolaires %}
+                                    <option value="{{ annee.id }}" {% if annee.id == selected_annee_id %}selected{% endif %}>
+                                        {{ annee.nom }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option disabled>Aucune année scolaire disponible</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Voir le Bilan</button>
+                </form>
 
-        <!-- Dépenses -->
-        {% comment %} <div class="card card-depense">
-                <h2>Dépenses</h2>
-                <p><strong>Total des Dépenses :</strong> {{ total_depenses }} GNF</p>
-            </div>
+                <!-- Affichage du bilan financier -->
+                {% if annee_scolaire %}
+                    <div class="bilan-container">
+                        <!-- Entrées -->
+                        <div class="card card-entree">
+                            <h2><strong><span class="libelle-blanc">Total des Entrées (Frais Scolaires)</span></strong></h2>
+                            <p><span class="total">{{ total_entrées }} GNF</span></p>
+                        </div>
 
-            <!-- Paiement des Salaires -->
-            <div class="card card-salaire">
-                <h2>Paiement des Salaires</h2>
-                <p><strong>Total des Salaires :</strong> {{ total_salaires }} GNF</p>
-            </div> {% endcomment %}
+                        <!-- Sorties -->
+                        <div class="card card-sortie">
+                            <h2><strong><span class="libelle-blanc">Total des Sorties (Salaires et Dépenses)</span></strong></h2>
+                            <p><span class="total">{{ total_sorties }} GNF</span></p>
+                        </div>
 
-            <!-- Sorties -->
-            <div class="card card-sortie">
-                <h2><strong>Total des Sorties :</strong></h2>
-                <p> <span class="total">{{ total_sorties }} GNF</span></p>
-            </div>
-
-            <!-- Solde -->
-            <div class="card card-solde">
-                <h2><strong>Solde Net </strong></h2>
-                <p> <span class="result">{{ solde }} GNF</span></p>
-            </div>
-
-            </div>
-
+                        <!-- Solde -->
+                        <div class="card card-solde">
+                            <h2><strong><span class="libelle-blanc">Solde Net</span></strong></h2>
+                            <p><span class="result">{{ solde }} GNF</span></p>
+                        </div>
     </div>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripte %}
