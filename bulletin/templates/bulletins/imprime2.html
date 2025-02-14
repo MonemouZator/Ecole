@@ -1,0 +1,150 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bulletins des Élèves</title>
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  
+  <style>
+    @media print {
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .content-wrapper, .container-fluid { width: 100%; }
+      button, .btn, form, .footer { display: none; }
+      h1, h3 { text-align: center; margin-bottom: 15px; }
+      .main-footer { display: none; }
+
+      .republique {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 10px;
+        color: #003366;
+      }
+      .devise {
+        font-size: 16px;
+        font-style: italic;
+        text-align: center;
+        color: #666666;
+        margin-bottom: 15px;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #003366;
+        text-transform: uppercase;
+        margin-top: 30px;
+      }
+      h3 {
+        font-size: 22px;
+        font-weight: bold;
+        background-color: #f4f4f4;
+        padding: 10px;
+        margin-bottom: 10px;
+        color: #003366;
+        text-transform: uppercase;
+        border-radius: 5px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .table th, .table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      .table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+      }
+
+      /* ✅ Saut de page après chaque bulletin */
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div id="contenu-a-imprimer">
+          {% if bulletins_trimestriels %}
+            {% for bulletin in bulletins_trimestriels %}
+              <div class="bulletin-eleve">
+                <center>
+                  <div class="republique">
+                    <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                  </div>
+                  <div class="devise">Travail - Justice - Solidarité</div>
+                  <div class="republique">
+                    <h2>Groupe Scolaire Privé BNB</h2>
+                  </div>
+                  <div class="devise">Union - Sincérité - Réussite</div>
+                  <h3>Bulletin du {{ trimestre }}ᵉ Trimestre</h3>
+                </center>
+
+                <table class="table table-bordered">
+                  <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
+                  <tr>
+                    <td>{{ bulletin.eleve.nom }}</td>
+                    <td>{{ bulletin.eleve.prenom }}</td>
+                    <td>{{ bulletin.eleve.date_naissance }}</td>
+                  </tr>
+                </table>
+
+                <table class="table table-bordered">
+                  <tr><th>Matière</th><th>Moyenne</th></tr>
+                  {% for note in bulletin.notes_par_matiere %}
+                    <tr>
+                      <td>{{ note.matiere__nom }}</td>
+                      <td>{{ note.moyenne_matiere|default:"N/A" }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+
+                
+                <table class="table table-bordered">
+                  <tr><th>Rang</th><th>Moyenne Annuelle</th><th>Observation</th></tr>
+                  <tr>
+                    <td>{{ bulletin.rang|default:"Non classé" }}</td>
+                    <td>{{ bulletin.moyenne_totale|default:"-" }}</td> <!-- Assure-toi que la moyenne annuelle est calculée et envoyée dans la vue -->
+                    <td>{{ bulletin.observation|default:"Aucune observation" }}</td>
+                  </tr>
+                </table>
+                
+              </div>
+              
+              <!-- ✅ Saut de page pour chaque élève -->
+              <div class="page-break"></div>
+            {% endfor %}
+          {% else %}
+            <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
+          {% endif %}
+        </div>
+
+        <!-- Bouton d'impression -->
+        <button onclick="imprimer()" class="btn btn-primary mt-3">Imprimer</button>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+  <script>
+    function imprimer() {
+      window.print();
+    }
+  </script>
+{% endblock %}

@@ -86,27 +86,13 @@ def logout_view(request):
 #FONCTION D'ENREGISTREMENT DES UTILISATEURS
 
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Administrateur
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth import authenticate, login
-from .models import Administrateur
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Administrateur
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model
-from django.contrib import messages
-
 User = get_user_model()
 
 def ajout_administrateur(request):
     if request.method == "POST":
+        print("Données reçues :", request.POST)  # Debugging
+        print("Fichiers reçus :", request.FILES)
+
         email = request.POST.get("email")
         password = request.POST.get("password")
         nom = request.POST.get("nom")
@@ -118,31 +104,33 @@ def ajout_administrateur(request):
         fonction = request.POST.get("fonction")
         photo = request.FILES.get("photo")
 
-        # Vérifier si l'email existe déjà
         if Administrateur.objects.filter(email=email).exists():
             messages.error(request, "Cet email est déjà utilisé.")
             return redirect("ajouter_administrateur")
 
-        # Créer un nouvel administrateur
-        administrateur = Administrateur.objects.create(
-            username=email,  # L'email utilisé comme nom d'utilisateur
-            email=email,
-            nom=nom,
-            prenom=prenom,
-            telephone=telephone,
-            genre=genre,
-            date_naissance=date_naissance,
-            lieu_naiss=lieu_naiss,
-            fonction=fonction,
-            photo=photo,
-        )
-        administrateur.set_password(password)  # Hash le mot de passe
-        administrateur.save()
-
-        messages.success(request, "Administrateur ajouté avec succès !")
-        return redirect("liste_administrateurs")  # Redirection vers la liste
+        try:
+            administrateur = Administrateur.objects.create(
+                username=email,
+                email=email,
+                nom=nom,
+                prenom=prenom,
+                telephone=telephone,
+                genre=genre,
+                date_naissance=date_naissance,
+                lieu_naiss=lieu_naiss,
+                fonction=fonction,
+                photo=photo,
+            )
+            administrateur.set_password(password)
+            administrateur.save()
+            messages.success(request, "Administrateur ajouté avec succès !")
+            return redirect("liste_administrateurs")
+        except Exception as e:
+            print("Erreur :", e)
+            messages.error(request, f"Erreur lors de l'ajout : {e}")
 
     return render(request, 'login/ajouter_administrateur.html')
+
 #LISTE DES UTILISATEURS
 def liste_administrateurs(request):
     try:

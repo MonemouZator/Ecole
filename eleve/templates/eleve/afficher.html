@@ -11,18 +11,21 @@
 {% block contenu %}
 <div class="content-wrapper container">
     <!-- Section d'entête -->
-    <div class="header-section text-center mb-5">
-        <h1 class="font-weight-bold">RÉPUBLIQUE DE GUINÉE</h1>
-        <h2>Travail - Justice - Solidarité</h2>
-    </div>
-
-    <div class="header-section text-center mb-5">
-        <h1 class="font-weight-bold">GSP/BNB (Bon Niveau de Base)</h1>
-        <h2>Union - Sincérité - Excellence</h2>
-    </div>
-
-    <h2 class="text-center mb-4">Reçu de paiement</h2>
-
+   <center>
+                <div class="republique">
+                  <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                </div>
+                <div class="devise">
+                  Travail - Justice - Solidarité
+                </div>
+                <div class="republique">
+                  <h2>Groupe Scolaire Privé BNB</h2>
+                </div>
+                <div class="devise">
+                  Union - Sincérité - Réussite
+                </div>
+                <h3>Reçu de paiement</h3>
+              </center>
     <!-- Informations sur l'élève et le parent -->
     <div class="mb-4">
         <p><strong>Nom de l'élève :</strong> {{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</p>
@@ -41,7 +44,7 @@
     <div class="info-section mt-3 p-3 bg-light rounded">
         <h3>Frais de scolarité :</h3>
         <table class="table table-bordered">
-            <thead>
+            <thead class="bg-primary">
                 <tr>
                     <th>Date</th>
                     <th>Montant total</th>
@@ -61,6 +64,45 @@
     </div>
     
     <!-- Bouton pour imprimer -->
-    <button class="btn btn-success mt-3 d-print-none" onclick="window.print()">Imprimer ce reçu</button>
+    <button class="btn btn-success mt-3 d-print-none" onclick="imprimer()">Imprimer ce reçu</button>
 </div>
+{% endblock %}
+
+{% block scripte %}
+    <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+    <script>
+        function imprimer() {
+            var content = document.querySelector('.content-wrapper').innerHTML;
+            var printWindow = window.open('', '', 'height=800,width=600');
+
+            printWindow.document.write('<html><head><title>Reçu de paiement</title>');
+            printWindow.document.write('<style>');
+            printWindow.document.write(`
+                @media print {
+                    body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; }
+                    h1, h2, h3, .republique, .devise { text-align: center; }
+                    .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                    .table th, .table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+                    .table th { background-color: #f4f4f4; font-weight: bold; }
+                    button, .btn, form { display: none; }
+                    .republique, .devise { visibility: visible; }
+                    .page-break { page-break-before: always; }
+                }
+            `);
+            printWindow.document.write('</style></head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+
+            printWindow.document.close();
+            printWindow.focus();
+            
+            // Attendre un peu avant d'imprimer
+            setTimeout(function() {
+                printWindow.print();
+            }, 500);
+        }
+    </script>
 {% endblock %}

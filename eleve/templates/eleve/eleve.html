@@ -62,7 +62,7 @@
               <!-- /.card-header -->
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
-                  <thead>
+                  <thead class="bg-primary">
                   <tr>
                   <th>N°</th>
                     <th>Nom</th>
@@ -109,8 +109,8 @@
                   
                  
 
-                <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-warning">
-                    <i class="fas fa-edit"></i> Modifier les informations
+                <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Modifier 
                 </a>
 
                     <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" title="Supprimer">

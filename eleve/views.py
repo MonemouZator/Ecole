@@ -128,12 +128,14 @@ def ajout(request):
             messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès et le premier paiement a été effectué.")
 
             # Redirection vers la page d'affichage du reçu
-            return redirect('afficher_recu', recu_id=recu.id)
+            return redirect('eleve/affiche.html', recu_id=recu.id)
         else:
             messages.error(request, "Les frais de scolarité existent déjà pour cet élève.")
             return redirect('eleve')
     else:
-        return render(request, 'eleve/eleve.html')
+        return render(request, 'eleve/affiche.html')
+
+
 
 # Ajout de la vue pour le paiement de la deuxième tranche
 from django.shortcuts import get_object_or_404, redirect
@@ -170,87 +172,15 @@ def paiement_tranche2(request, eleve_id):
 
 
 
-
-
-
-
-
-
-def afficher_recu(request, recu_id):
-    """Afficher le reçu pour le paiement effectué."""
-    recu = get_object_or_404(Recu, id=recu_id)
-
-    # Vérifier si le paiement complet est effectué
-    frais = recu.frais_scolarite
-    if frais.solde == 0:
-        paiement_statut = "Frais entièrement payés"
-    elif frais.est_paye_tranche2:
-        paiement_statut = "Deuxième tranche payée"
-    else:
-        paiement_statut = "En attente de la deuxième tranche"
-
-    context = {
-        'recu': recu,
-        'paiement_statut': paiement_statut,
-    }
-
-    return render(request, 'eleve/afficher_recu.html', context)
-
-
-# def payer_tranche1(request, eleve_id):
-#     """Payer la première tranche des frais de scolarité."""
-#     eleve = get_object_or_404(Eleve, id=eleve_id)
-#     frais_scolarite = get_object_or_404(FraisScolarite, eleve=eleve)
-
-#     # Vérifier si la première tranche a déjà été payée
-#     if frais_scolarite.total_paye == 0:
-#         frais_scolarite.payer_tranche1()
-#         messages.success(request, "La première tranche a été payée avec succès.")
-#         return redirect('afficher_recu', recu_id=frais_scolarite.recu_set.first().id)
-#     else:
-#         messages.error(request, "La première tranche a déjà été payée.")
-#         return redirect('eleve_detail', eleve_id=eleve.id)
-
-
-# def payer_tranche2(request, eleve_id):
-#     """Payer la deuxième tranche des frais de scolarité."""
-#     eleve = get_object_or_404(Eleve, id=eleve_id)
-#     frais_scolarite = get_object_or_404(FraisScolarite, eleve=eleve)
-
-#     if frais_scolarite.total_paye >= frais_scolarite.tranche1 and frais_scolarite.solde > 0:
-#         frais_scolarite.payer_tranche2()
-#         messages.success(request, "La deuxième tranche a été payée avec succès.")
-#         return redirect('afficher_recu', recu_id=frais_scolarite.recu_set.last().id)
-#     else:
-#         messages.error(request, "La première tranche doit être payée avant de régler la deuxième.")
-#         return redirect('eleve_detail', eleve_id=eleve.id)
-
-
-def afficher_recu(request, recu_id):
-    """Afficher le reçu pour le paiement effectué."""
-    recu = get_object_or_404(Recu, id=recu_id)
-
-    # Vérifier si le paiement complet est effectué
-    frais = recu.frais_scolarite
-    if frais.solde == 0:
-        paiement_statut = "Frais entièrement payés"
-    elif frais.est_paye_tranche2:
-        paiement_statut = "Deuxième tranche payée"
-    else:
-        paiement_statut = "En attente de la deuxième tranche"
-
-    context = {
-        'recu': recu,
-        'paiement_statut': paiement_statut,
-    }
-
-    return render(request, 'eleve/afficher_recu.html', context)
-
     
 #AFFICHARGE DES RECUS 
+
+#RECU DE PAIEMENT DE LA DEUXIEME TRANCHE
 def afficher_recu(request, recu_id):
         recu = get_object_or_404(Recu, id=recu_id)
         return render(request, 'eleve/afficher.html', {'recu': recu})
+
+
 
 #FONCTION DE MODIFICATION
 from django.shortcuts import render, get_object_or_404, redirect

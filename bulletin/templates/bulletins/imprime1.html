@@ -1,0 +1,199 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bulletins des Élèves</title>
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  
+  <style>
+    @media print {
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .content-wrapper, .container-fluid { width: 100%; }
+      button, .btn, form, .footer { display: none; }
+
+      /* En-tête République & École */
+      h1, h2, h3, .republique, .devise { text-align: center; margin-bottom: 15px; }
+      .republique, .devise {
+        visibility: visible !important;
+        display: block !important;
+      }
+      .republique {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #003366;
+      }
+      .devise {
+        font-size: 16px;
+        font-style: italic;
+        color: #666666;
+      }
+
+      /* Tableaux */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .table th, .table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      .table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+      }
+
+      /* Saut de page après chaque élève */
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div id="contenu-a-imprimer">
+
+          {% for eleve in eleves %}
+            <div class="page-break">
+              <!-- En-tête République et École -->
+              <center>
+                <div class="republique">
+                  <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                </div>
+                <div class="devise">
+                  Travail - Justice - Solidarité
+                </div>
+                <div class="republique">
+                  <h2>Groupe Scolaire Privé BNB</h2>
+                </div>
+                <div class="devise">
+                  Union - Sincérité - Réussite
+                </div>
+                <h3>Bulletin Annuel de l'élève</h3>
+              </center>
+
+              <!-- Informations de l'Élève -->
+              
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Date de naissance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ eleve.nom }}</td>
+                    <td>{{ eleve.prenom }}</td>
+                    <td>{{ eleve.date_naissance }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- Bulletins Trimestriels -->
+              {% for trimestre in "123"|make_list %}
+                {% with bulletins_trimestriels|dictsort:"trimestre" as bulletins_sorted %}
+                  {% for bulletin in bulletins_sorted %}
+                    {% if bulletin.eleve.id == eleve.id and bulletin.trimestre == trimestre|add:0 %}
+                      <h3 class="bg-primary text-center">Matières et Moyennes du Trimestre {{ bulletin.trimestre }}</h3>
+                      <table class="table table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Matière</th>
+                            <th>Moyenne</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for note in bulletin.notes_par_matiere %}
+                            <tr>
+                              <td>{{ note.matiere__nom }}</td>
+                              <td>{{ note.moyenne_matiere }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+                    {% endif %}
+                  {% endfor %}
+                {% endwith %}
+              {% endfor %}
+
+              <!-- Résultats Annuels -->
+              {% for bulletin_annuel in bulletins_annuels %}
+                {% if bulletin_annuel.eleve.id == eleve.id %}
+                  <h3 class="bg-primary text-center">Résultats Annuels</h3>
+                  <table class="table table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Rang</th>
+                        <th>Moyenne Annuelle</th>
+                        <th>Observation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>{{ bulletin_annuel.get_rang }}</td>
+                        <td>{{ bulletin_annuel.moyenne_totale_annuelle }}</td>
+                        <td>{{ bulletin_annuel.observation }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                {% endif %}
+              {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+
+        <!-- Bouton d'impression -->
+        <button onclick="imprimer()" class="btn btn-primary mt-3">Imprimer le Bulletin</button>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+  <script>
+    function imprimer() {
+      var content = document.getElementById('contenu-a-imprimer').innerHTML;
+      var printWindow = window.open('', '', 'height=800,width=600');
+
+      printWindow.document.write('<html><head><title>Bulletin</title>');
+      printWindow.document.write('<style>');
+      printWindow.document.write(`
+        @media print {
+          body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; }
+          h1, h2, h3, .republique, .devise { text-align: center; }
+          .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+          .table th, .table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+          .table th { background-color: #f4f4f4; font-weight: bold; }
+          button, .btn, form { display: none; }
+          .republique, .devise { visibility: visible; }
+          .page-break { page-break-before: always; }
+        }
+      `);
+      printWindow.document.write('</style></head><body>');
+      printWindow.document.write(content);
+      printWindow.document.write('</body></html>');
+
+      printWindow.document.close();
+      printWindow.focus();
+      
+      // Attendre un peu avant d'imprimer
+      setTimeout(function() {
+        printWindow.print();
+       
+      }, 500);
+    }
+  </script>
+{% endblock %}
