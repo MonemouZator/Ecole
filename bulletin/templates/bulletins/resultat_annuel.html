@@ -3,16 +3,8 @@
 
 {% block styl_parent %}
   <title>Enseignant | Résultats Annuels</title>
-
-  <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
@@ -28,16 +20,14 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
-              <h3>Bulletins Annuels par Groupe Classe</h3>
+              <h3>Bulletins Annuels par Groupe de Classe ou option</h3>
               <form method="get" class="form-inline">
                 <div class="form-group mx-sm-3 mb-2">
                   <label for="groupeclasse" class="sr-only">Groupe Classe</label>
                   <select name="groupe_classe" id="groupeclasse" class="form-control" required>
                     <option value="">-- Sélectionnez un groupe classe --</option>
                     {% for groupe in groupes_classes %}
-                      <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>
-                        {{ groupe.nom }}
-                      </option>
+                      <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -46,30 +36,49 @@
                   <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
                     <option value="">-- Sélectionnez une année scolaire --</option>
                     {% for annee in annees_scolaires %}
-                      <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
-                        {{ annee.nom }}
-                      </option>
+                      <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
                     {% endfor %}
                   </select>
                 </div>
                 <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
+                <button type="button" onclick="imprimer()" class="btn btn-secondary mb-2">Imprimer</button>
               </form>
             </div>
+
             <div class="card-body">
               {% if error_message %}
                 <div class="alert alert-danger">{{ error_message }}</div>
               {% endif %}
+
               {% if sorted_bulletins %}
-                <table id="bulletins" class="table table-bordered table-striped">
+              <div id="impression">
+                <center>
+                  <div class="republique">
+                    <h1 style="font-size: 36px; font-weight: bold; color: #0056b3;">RÉPUBLIQUE DE GUINÉE</h1>
+                  </div>
+                  <div class="devise" style="font-size: 20px; font-style: italic; color: #777777; margin-bottom: 20px;">
+                    Travail - Justice - Solidarité
+                  </div>
+
+                  <div class="republique">
+                    <h2 style="font-size: 30px; font-weight: bold; color: #0056b3;">Groupe Scolaire Privé BNB</h2>
+                  </div>
+                  <div class="devise" style="font-size: 20px; font-style: italic; color: #777777; margin-bottom: 20px;">
+                    Union - Sincérité - Réussite
+                  </div>
+
+                  <h3 style="font-size: 24px; font-weight: normal; color: #333333;">
+                    Résultat annuel par groupe de classe ou option
+                  </h3>
+                </center>
+
+                <table id="bulletins" class="table table-bordered">
                   <thead>
                     <tr>
                       <th>Rang</th>
                       <th>Nom de l'élève</th>
-                      {% comment %} <th>Groupe Classe</th>
-                      <th>Année Scolaire</th> {% endcomment %}
                       <th>Moyenne Annuelle</th>
                       <th>Observation</th>
-                      
                     </tr>
                   </thead>
                   <tbody>
@@ -77,15 +86,14 @@
                       <tr>
                         <td>{{ bulletin.rang }}</td>
                         <td>{{ bulletin.bulletin.eleve.nom }} {{ bulletin.bulletin.eleve.prenom }}</td>
-                        {% comment %} <td>{{ bulletin.bulletin.eleve.groupe_classe.nom }}</td>
-                        <td>{{ bulletin.bulletin.annee_scolaire.nom }}</td> {% endcomment %}
                         <td>{{ bulletin.moyenne_annuelle|floatformat:2 }}</td>
                         <td>{{ bulletin.observation }}</td>
-                        
                       </tr>
                     {% endfor %}
                   </tbody>
                 </table>
+              </div> <!-- Fin div #impression -->
+
               {% else %}
                 <p>Aucun bulletin trouvé pour les critères sélectionnés.</p>
               {% endif %}
@@ -99,37 +107,19 @@
 {% endblock %}
 
 {% block scripte %}
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
-<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<!-- AdminLTE App -->
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
-<!-- Initialisation de DataTables -->
 <script>
-  $(document).ready(function() {
-    $('#bulletins').DataTable({
-      "responsive": true,
-      "autoWidth": false,
-      "lengthChange": false,
-      "paging": true,
-      "info": true,
-      "buttons": ["copy", "excel", "pdf", "print"]
-    }).buttons().container().appendTo('#bulletins_wrapper .col-md-6:eq(0)');
-  });
+  function imprimer() {
+    var printContents = document.getElementById("impression").outerHTML;
+    var originalContents = document.body.innerHTML;
+    
+    document.body.innerHTML = printContents;
+    window.print();
+    document.body.innerHTML = originalContents;
+    location.reload(); // Recharge la page après l'impression pour éviter les problèmes d'affichage
+  }
 </script>
 {% endblock %}

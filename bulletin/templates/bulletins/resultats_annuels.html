@@ -1,0 +1,228 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Enseignant | Résultats Annuels</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  <style>
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #333333;
+    }
+
+    .content-wrapper {
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    .form-inline {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-right: 10px;
+      width: auto;
+    }
+
+    .btn {
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 16px;
+      text-transform: uppercase;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .table {
+      background-color: #f9f9f9;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th {
+      background-color: #000;
+      color: #ffffff;
+      text-align: center;
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    .table td {
+      text-align: center;
+      padding: 12px;
+    }
+
+    /* Style for print */
+    @media print {
+      body {
+        visibility: hidden;
+      }
+
+      .content-wrapper, .content-wrapper * {
+        visibility: visible;
+      }
+
+      .content-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+      }
+
+      .table, .table th, .table td {
+        border: 1px solid #000;
+        border-collapse: collapse;
+      }
+
+      .table th {
+        background-color: #0056b3;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 14px;
+      }
+
+      .table td {
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      /* Hide filters, form fields, and buttons for print */
+      .form-inline, form, #imprimer {
+        display: none;
+      }
+
+      /* Hide other elements like navigation or headers if necessary */
+      header, footer, .sidebar, .navbar {
+        display: none;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+   <div class="content-wrapper">
+    
+    
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    <form method="get" class="form-inline mb-4">
+        <div>
+            <label for="niveau">Niveau :</label>
+            <select name="niveau" id="niveau" class="form-control">
+                <option value="">Sélectionnez un niveau</option>
+                {% for niveau in niveaux %}
+                    <option value="{{ niveau.id }}" {% if niveau_selectionne == niveau.id %}selected{% endif %}>{{ niveau.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="annee_scolaire">Année Scolaire :</label>
+            <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+                <option value="">Sélectionnez une année scolaire</option>
+                {% for annee in annees_scolaires %}
+                    <option value="{{ annee.id }}" {% if annee_scolaire_selectionnee == annee.id %}selected{% endif %}>{{ annee.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
+        </div>
+
+            <!-- Print button -->
+    <div class="text-center mt-4">
+        <button id="imprimer" class="btn btn-primary" onclick="window.print()">Imprimer</button>
+    </div>
+    </form>
+
+    {% if bulletins %}
+        <div id="impression">
+            <center>
+                <div class="republique">
+                    <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                </div>
+                <div class="devise">
+                    Travail - Justice - Solidarité
+                </div>
+
+                <div class="republique">
+                    <h2>Groupe Scolaire Privé BNB</h2>
+                </div>
+                <div class="devise">
+                    Union - Sincérité - Réussite
+                </div>
+
+                <h3>Résultat du {{ trimestre_selectionne }}<sup>ème</sup> Trimestre - {{ annee_selectionnee }}</h3>
+            </center>
+            <table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Élève</th>
+            <th>Moyenne Annuelle</th>
+            <th>Rang</th>
+            <th>Observation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for bulletin in bulletins %}
+            <tr>
+                <td>{{ bulletin.eleve.nom }}</td>
+                <td>{{ bulletin.moyenne_annuelle }}</td>
+                <td>
+                    {% if bulletin.rang == 1 %}
+                        1er
+                    {% elif bulletin.rang == 2 %}
+                        2ème
+                    {% elif bulletin.rang == 3 %}
+                        3ème
+                    {% else %}
+                        {{ bulletin.rang }}ème
+                    {% endif %}
+                </td>
+                <td>{{ bulletin.observation }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+        </div>
+    {% else %}
+        <p>Aucun bulletin disponible pour cette sélection.</p>
+    {% endif %}
+
+
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

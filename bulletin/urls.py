@@ -11,5 +11,9 @@ urlpatterns = [
     path('valider-bulletin-trimestre/', views.valider_bulletin_trimestre, name='trimestre'),  # Valide le bulletin trimestriel
     path('valider-bulletin-annuel/', views.valider_bulletin_annuel, name='valider_bulletin'),  # Valide le bulletin annuel
     path('imprime1/', views.imprime1_view, name='imprime1'),  # Vue pour l'impression (probablement pour imprimer les bulletins)
-   path('imprimer-bulletin/', views.impression_bulletin, name='impression_bulletin'),
+    path('imprimer-bulletin/', views.impression_bulletin, name='impression_bulletin'),
+#    path('imprime3/', views.imprime3, name='imprime3'),
+    path('resultats-trimestriels/', views.resultats_trimestriels, name='resultats_trimestriels'),
+    path('resultats-annuels/', views.resultats_annuels, name='resultats_annuels'),
+
 ]

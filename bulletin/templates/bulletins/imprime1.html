@@ -45,6 +45,9 @@
         background-color: #f4f4f4;
         font-weight: bold;
       }
+      .copyright {
+    display: none !important;
+  }
 
       /* Saut de page après chaque élève */
       .page-break {
@@ -76,7 +79,7 @@
                 <div class="devise">
                   Union - Sincérité - Réussite
                 </div>
-                <h3>Bulletin Annuel de l'élève</h3>
+                <h3>Bulletin  de l'élève</h3>
               </center>
 
               <!-- Informations de l'Élève -->
@@ -128,12 +131,12 @@
               <!-- Résultats Annuels -->
               {% for bulletin_annuel in bulletins_annuels %}
                 {% if bulletin_annuel.eleve.id == eleve.id %}
-                  <h3 class="bg-primary text-center">Résultats Annuels</h3>
+                  <h3 class="bg-primary text-center">Résultats </h3>
                   <table class="table table-bordered">
                     <thead>
                       <tr>
                         <th>Rang</th>
-                        <th>Moyenne Annuelle</th>
+                        <th>Moyenne </th>
                         <th>Observation</th>
                       </tr>
                     </thead>
@@ -156,7 +159,7 @@
       </div>
     </section>
   </div>
-{% endblock %}
+{% endblock %
 
 {% block scripte %}
   <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
@@ -165,35 +168,7 @@
 
   <script>
     function imprimer() {
-      var content = document.getElementById('contenu-a-imprimer').innerHTML;
-      var printWindow = window.open('', '', 'height=800,width=600');
-
-      printWindow.document.write('<html><head><title>Bulletin</title>');
-      printWindow.document.write('<style>');
-      printWindow.document.write(`
-        @media print {
-          body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; }
-          h1, h2, h3, .republique, .devise { text-align: center; }
-          .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-          .table th, .table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
-          .table th { background-color: #f4f4f4; font-weight: bold; }
-          button, .btn, form { display: none; }
-          .republique, .devise { visibility: visible; }
-          .page-break { page-break-before: always; }
-        }
-      `);
-      printWindow.document.write('</style></head><body>');
-      printWindow.document.write(content);
-      printWindow.document.write('</body></html>');
-
-      printWindow.document.close();
-      printWindow.focus();
-      
-      // Attendre un peu avant d'imprimer
-      setTimeout(function() {
-        printWindow.print();
-       
-      }, 500);
+      window.print();
     }
   </script>
 {% endblock %}

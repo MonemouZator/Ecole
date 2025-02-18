@@ -1,0 +1,171 @@
+{% extends "Base/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bulletins des Élèves</title>
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  
+  <style>
+    @media print {
+      body { font-family: Arial, sans-serif; padding: 20px; }
+      .content-wrapper, .container-fluid { width: 100%; }
+      button, .btn, form, .footer { display: none; }
+      h1, h3 { text-align: center; margin-bottom: 15px; }
+      .main-footer { display: none; }
+
+      .republique {
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 10px;
+        color: #003366;
+      }
+      .devise {
+        font-size: 16px;
+        font-style: italic;
+        text-align: center;
+        color: #666666;
+        margin-bottom: 15px;
+      }
+
+      h1 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #003366;
+        text-transform: uppercase;
+        margin-top: 30px;
+      }
+      h3 {
+        font-size: 22px;
+        font-weight: bold;
+        background-color: #f4f4f4;
+        padding: 10px;
+        margin-bottom: 10px;
+        color: #003366;
+        text-transform: uppercase;
+        border-radius: 5px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      .table th, .table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      .table th {
+        background-color: #f4f4f4;
+        font-weight: bold;
+      }
+
+      /* ✅ Saut de page après chaque bulletin */
+      .page-break {
+        page-break-before: always;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block contenu %}
+    <div class="content-wrapper">
+      <center>
+        <div class="republique">
+          <h1>RÉPUBLIQUE DE GUINÉE</h1>
+        </div>
+        <div class="devise">Travail - Justice - Solidarité</div>
+        <div class="republique">
+          <h2>Groupe Scolaire Privé BNB</h2>
+        </div>
+        <div class="devise">Union - Sincérité - Réussite</div>
+        <h3>Bulletin du {{ trimestre }}ᵉ Trimestre</h3>
+      </center>
+        <section class="content">
+            <div class="container-fluid">
+                {% if bulletins_trimestriels %}
+                    <p>Nombre de bulletins : {{ bulletins_trimestriels|length }}</p> <!-- Affiche le nombre de bulletins pour débogage -->
+                    {% for bulletin in bulletins_trimestriels %}
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <table class="table table-bordered">
+                                  <thead class="thead-dark">
+                                    <tr>
+                                      <th>Nom</th>
+                                      <th>Prénom</th>
+                                      <th>Date de naissance</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr>
+                                      <td>{{ bulletin.eleve.nom }}</td>
+                                      <td>{{ bulletin.eleve.prenom }}</td>
+                                      <td>{{ bulletin.eleve.date_naissance }}</td>
+                                    </tr>
+                                  </tbody>
+                                </table><br>
+
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Matière</th>
+                                            <th>Moyenne</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for note in bulletin.notes_par_matiere %}
+                                            <tr>
+                                                <td>{{ note.matiere__nom }}</td>
+                                                <td>{{ note.moyenne_matiere }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-bordered mt-3">
+                                    <thead>
+                                        <tr>
+                                            <th>Rang</th>
+                                            <th>Moyenne Totale</th>
+                                            <th>Observation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{{ bulletin.rang }}</td>
+                                            <td>{{ bulletin.moyenne_totale|default:"Non disponible" }}</td>
+                                            <td>{{ bulletin.observation }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="page-break"></div> <!-- Saut de page après chaque bulletin -->
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p>Aucun bulletin trouvé pour les critères sélectionnés.</p>
+                {% endif %}
+            </div>
+        </section>
+
+        {% if bulletins_trimestriels %}
+            <button onclick="imprimer()">Imprimer les bulletins</button> <!-- Affichage du bouton d'impression uniquement si des bulletins existent -->
+        {% endif %}
+    </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+  <script>
+    function imprimer() {
+      window.print();
+    }
+  </script>
+{% endblock %}

@@ -79,4 +79,5 @@ urlpatterns = [
     path('resultat-groupe-annel/', include('bulletin.urls')),
     path('valider-bulletin/', include('bulletin.urls')),
     path('valider-/', include('bulletin.urls')),
+    path('resltat-niveau-annee/', include('bulletin.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
