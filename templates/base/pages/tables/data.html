@@ -1,33 +1,24 @@
 {% extends "Base/index.html" %}
 {% load static %}
- {% block styl_parent %}
+
+{% block styl_parent %}
   <title>enseignant | Accueil</title>
-
-
-  <!-- Google Font: Source Sans Pro -->
+  <!-- Stylesheets -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
   <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
-
- {% block body %}
-<body class="hold-transition sidebar-mini">
- {% endblock body %}
-
-
-
+{% block body %}
+  <body class="hold-transition sidebar-mini">
+  {% endblock body %}
 
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
+  <!-- Content Wrapper -->
   <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -36,338 +27,182 @@
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item"><a href="#">accueil</a></li>
               <li class="breadcrumb-item active">Tableau de bord</li>
             </ol>
           </div>
         </div>
-      </div><!-- /.container-fluid -->
+      </div>
     </section>
 
-    <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
         <div class="row">
           <div class="col-12">
-           
-
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title"></h3>
-                
-                 <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
-                                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        Ajouter un nouveau enseignant
-                      </button>
-        
-                      <!-- Modal -->
-                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                              <h5 class="modal-title" id="exampleModalLabel">Enregistrement des enseignant</h5>
-                        
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="{% url 'ajout-enseignant' %}" method="post" class="row">
-
-                                      {% csrf_token %}
-                                <div class="form-group col-md-6">
-                                  <label for="nom" class="col-form-label">Nom:</label>
-                                  <input type="text" class="form-control" id="nom" name="nom" required placeholder="entrer le nom">
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="prenom" class="col-form-label">Prénom:</label>
-                                  <input type="text" class="form-control" id="prenom" name="prenom" required placeholder="entrer le prénom">
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="tel" class="col-form-label">Téléhone:</label>
-                                  <input type="text" class="form-control" id="tel" name="tel" required placeholder="entrer le numéro de téléphone" >
-                                </div>
-                                  <div class="form-group col-md-6">
-                                    <label for="sexe" class="col-form-label">Sexe:</label>
-                                    <select class="form-select form-control" aria-label="Default select example" name='sexe'>
-                                      <option value="Homme">Masculin</option>
-                                      <option value="Femme">Feminin</option>
-                                    </select>
-                                  </div>
-                                <div class="form-group col-md-6">
-                                  <label for="adresse" class="col-form-label">Adresse:</label>
-                                  <input type="text" class="form-control" id="adresse" name="adresse" required placeholder="entrer l'adresse">
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="naissanceclass="col-form-label">Date naissance:</label>
-                                  <input type="date" class="form-control" id="naissance" name="naissance" required>
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="lieu" class="col-form-label">Lieu naissance:</label>
-                                  <input type="text" class="form-control" id="lieu" name="lieu" required placeholder="entrer le lieu de naissance">
-                                </div>
-
-
-                                 <div class="form-group col-md-6">
-                                  <label for="sp" class="col-form-label">Spécialité:</label>
-                                  <input type="text" class="form-control" id="sp" name="sp" required placeholder="entrer la specialité">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="email" class="col-form-label">Email:</label>
-                                  <input type="text" class="form-control" id="email" name="email" required placeholder="monemouzator97@gmail.com">
-                                </div>
-
-
-                                 <div class="form-group col-md-6">
-                                  <label for="lieu" class="col-form-label">Photo:</label>
-                                  <input type="file" class="form-control" id="photo" name="photo" required placeholder="entrer le lieu de naissance">
-                                </div>
-                              
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                              <button type="submit" class="btn btn-primary">Enregistrer</button>
-                            </div>
-                          </form>
-                          </div>
-                        </div>
-                      </div>
-               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
-
-
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Ajouter un nouveau enseignant
+                </button>
               </div>
-              <!-- /.card-header -->
+
               <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                   <thead class="bg-primary">
-                  <tr>
-                  <th>N°</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Sexe</th>
-                    <th>Cotact</th>
-                    <th>Adresse</th>
-                    <th>Action</th>
-                  </tr>
+                    <tr>
+                      <th>N°</th>
+                      <th>Nom</th>
+                      <th>Prénom</th>
+                      <th>Sexe</th>
+                      <th>Contact</th>
+                      <th>Adresse</th>
+                      <th>Action</th>
+                    </tr>
                   </thead>
                   <tbody>
-                  {% for ensei in enseignants %}
-                  <tr>
-                   <td>
-                   {{ensei.id}}
-                    </td>
-                    <td>
-                   {{ensei.nom}}
-                    </td>
-                    <td>
-                     {{ensei.prenom}}
-                    </td>
-                    <td>
-                      {{ensei.Sexe}}
-                    </td>
-                    <td> 
-                     {{ensei.telephone}}
-                    </td>
-                    <td> 
-                    {{ensei.adresse}}
-                    </td>
-                      <td> 
-                  
-                           <!-- DEBUT DE LA FENETRE MODALE DE MODIFICATION PATIENT -->
+                    {% for ensei in enseignants %}
+                    <tr>
+                      <td>{{ ensei.id }}</td>
+                      <td>{{ ensei.nom }}</td>
+                      <td>{{ ensei.prenom }}</td>
+                      <td>{{ ensei.Sexe }}</td>
+                      <td>{{ ensei.telephone }}</td>
+                      <td>{{ ensei.adresse }}</td>
+                      <td>
+                        <a href="{% url 'enseignant_detail' ensei.id %}" class="btn btn-info">
+                          <i class="fas fa-eye"></i> Voir Détails
+                        </a>
 
-
-
-<a href="{% url 'detail'  %}">
-          <i class="fas fa-eye" style="font-size: 1.5rem;"></i> Voir
- </a>
- <a href="#" data-toggle="modal" data-target="#modifie{{ ensei.id }}" title="Modifier">
+                        <!-- Modifier Button -->
+<!-- Modifier Button -->
+<a href="#" data-toggle="modal" data-target="#modifie{{ ensei.id }}" title="Modifier">
     <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
 </a>
 
-<div class="modal fade" id="modifie{{ ensei.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+<!-- Modifier Modal -->
+<div class="modal fade" id="modifie{{ ensei.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                <h5 class="modal-title">Modifier les informations</h5>
                 <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'modifi-enseignant' %}" method="post" enctype="multipart/form-data" class="row">
+                <form action="{% url 'modifier' ensei.id %}" method="post" enctype="multipart/form-data" class="row">
+
+
                     {% csrf_token %}
-                    
                     <div class="form-group col-md-6">
-                        <label for="nom" class="col-form-label">Nom :</label>
-                        <input type="text" class="form-control" id="nom" name="nom" required value="{{ ensei.nom }}">
+                        <label for="nom">Nom:</label>
+                        <input type="text" class="form-control" id="nom" name="nom" value="{{ ensei.nom }}" required>
                     </div>
-                    
-                              <div class="form-group col-md-6">
-                                  <label for="prenom" class="col-form-label">Prénom:</label>
-                                  <input type="text" class="form-control" id="prenom" name="prenom" required value="{{ensei.prenom}}" >
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="tel" class="col-form-label">Téléhone:</label>
-                                  <input type="text" class="form-control" id="tel" name="tel" required   value="{{ensei.telephone}}">
-                                </div>
-                                
-                                <div class="form-group col-md-6">
-                                  <label for="naissanceclass="col-form-label">Sexe:</label>
-                                  <input type="text" class="form-control" id="sexe" name="sexe" required value="{{ensei.Sexe}}">
-                                </div>
+                    <div class="form-group col-md-6">
+                        <label for="prenom">Prénom:</label>
+                        <input type="text" class="form-control" id="prenom" name="prenom" value="{{ ensei.prenom }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="sexe">Sexe:</label>
+                        <select class="form-control" id="sexe" name="sexe" required>
+                            <option value="H" {% if ensei.sexe == 'H' %}selected{% endif %}>Masculin</option>
+                            <option value="F" {% if ensei.sexe == 'F' %}selected{% endif %}>Féminin</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="tel">Téléphone:</label>
+                        <input type="text" class="form-control" id="tel" name="tel" value="{{ ensei.telephone }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="adresse">Adresse:</label>
+                        <input type="text" class="form-control" id="adresse" name="adresse" value="{{ ensei.adresse }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="naissance">Date de naissance:</label>
+                        <input type="date" class="form-control" id="naissance" name="naissance" value="{{ ensei.date_naiss|date:'Y-m-d' }}" required>
+                    </div>
 
-                                <div class="form-group col-md-6">
-                                  <label for="naissanceclass="col-form-label">Adresse:</label>
-                                  <input type="text" class="form-control" id="adresse" name="adresse" required value="{{ensei.adresse}}">
-                                </div>
-                        
-                                <div class="form-group col-md-6">
-                                  
-                                  <label for="naissanceclass="col-form-label">Date naissance:</label>
-                                  {% with date_naissance=ensei.date_naiss|date:'Y-m-d' %}
-                                  <input type="date" class="form-control" id="naissance" name="naissance" required value="{{date_naissance}}">
-                                  {% endwith %}
+                    <div class="form-group col-md-6">
+                        <label for="lieu">Lieu de naissance:</label>
+                        <input type="text" class="form-control" id="lieu" name="lieu" value="{{ ensei.lieu_naiss }}" required>
+                    </div>
+<div class="form-group col-md-6">
+    <label for="photo">Photo:</label>
+    <!-- Afficher la photo actuelle -->
+    {% if ensei.photo %}
+        <img src="{{ ensei.photo.url }}" alt="Photo actuelle" style="max-width: 100px; max-height: 100px; display: block;">
+    {% else %}
+        <p>Aucune photo disponible</p>
+    {% endif %}
+    <input type="file" class="form-control" id="photo" name="photo">
+</div>
 
-                                </div>
-        
-                                <div class="form-group col-md-6">
-                                  <label for="lieu" class="col-form-label">Lieu naissance:</label>
-                                  <input type="text" class="form-control" id="lieu" name="lieu" required value="{{ensei.lieu_naiss}}">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="sp" class="col-form-label">Spécialité:</label>
-                                  <input type="text" class="form-control" id="sp" name="sp" required placeholder="entrer la specialité" value="{{ensei.specialite}}">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="email" class="col-form-label">Email:</label>
-                                  <input type="text" class="form-control" id="email" name="email" required placeholder="monemouzator97@gmail.com" value="{{ensei.email}}">
-                                </div>
-
-                                 <div class="form-group col-md-6">
-                                  <label for="lieu" class="col-form-label">Photo:</label>
-                                  <input type="file" class="form-control" id="photo" name="photo" value="{{ensei.photo}}" >
-                                </div>
-
+                    <div class="form-group col-md-6">
+                        <label for="sp">Spécialité:</label>
+                        <input type="text" class="form-control" id="sp" name="sp" value="{{ ensei.specialite }}" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="email">Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ ensei.email }}" required>
+                    </div>
                     <input type="hidden" name="id" value="{{ ensei.id }}">
-
-                <div class="modal-footer">
-                                  <button type="submit" class="btn btn-primary">Modifier</button>
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    </div>
                 </form>
-            </div>
-                  
             </div>
         </div>
     </div>
 </div>
-         
 
-                    <a href="#" data-toggle="modal" data-target="#supprime{{ ensei.id }}" title="Supprimer">
-                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
-                    </a>
 
-                      <!-- Début de la fenêtre modale de suppression -->
-                      <div class="modal fade" id="supprime{{ ensei.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+                        <!-- Supprimer Button -->
+                        <a href="#" data-toggle="modal" data-target="#supprime{{ ensei.id }}" title="Supprimer">
+                          <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                        </a>
+
+                        <!-- Supprimer Modal -->
+                        <div class="modal fade" id="supprime{{ ensei.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                           <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                  <div class="modal-header bg-primary">
-                                      <h5 class="modal-title" id="exampleModalLabel">SUPPRESSION DES INFOS</h5>
-                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                          <span aria-hidden="true">&times;</span>
-                                      </button>
-                                  </div>
-                                  <div class="modal-body">
-                                      <form action="{% url 'supprimer-enseignant' ensei.id %}" method="post" class="row">
-                                          {% csrf_token %}
-                                          <p>
-                                              Voulez-vous vraiment supprimer les informations de :
-                                              <span class="text-primary">{{ ensei.nom }} {{ ensei.prenom }}</span> ?
-                                          </p>
-                                  </div>
-                                  <div class="modal-footer">
-                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
-                                      <button type="submit" class="btn btn-danger">Oui</button>
-                                  </div>
-                                      </form>
+                            <div class="modal-content">
+                              <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title">Supprimer l'enseignant</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
                               </div>
+                              <div class="modal-body">
+                                <form action="{% url 'supprimer-enseignant' ensei.id %}" method="post">
+                                  {% csrf_token %}
+                                  <p>Voulez-vous vraiment supprimer {{ ensei.nom }} {{ ensei.prenom }} ?</p>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                                    <button type="submit" class="btn btn-danger">Oui</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
                           </div>
-                      </div>
-                      <!-- Fin de la fenêtre modale de suppression -->
-                          
-                  
-                    </td>
-                  </tr>
-                 {% endfor %}
+                        </div>
+
+                      </td>
+                    </tr>
+                    {% endfor %}
                   </tbody>
-                  
                 </table>
               </div>
-              <!-- /.card-body -->
             </div>
-            <!-- /.card -->
           </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
 {% endblock %}
 
-  
-
-  
 {% block scripte %}
-
-
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
-<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<!-- AdminLTE App -->
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'base/js/demo.js' %}"></script>
-<!-- Page specific script -->
-<script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
-</script>
 {% endblock %}

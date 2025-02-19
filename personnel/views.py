@@ -19,6 +19,10 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
 def login_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -42,13 +46,12 @@ def login_view(request):
             elif user.fonction == 'ENSEIGNANT':
                 return redirect('enseignant_dashboard')
             elif user.fonction == 'FONDATEUR':
-                return redirect('home')
+                return redirect('home')  # Vous pouvez rediriger ici vers le tableau de bord du fondateur ou ailleurs.
             else:
                 # Si la fonction de l'utilisateur est invalide ou non définie
                 messages.error(request, "Votre fonction est incorrecte ou manquante.")
                 return redirect('login')
 
-            return redirect('home')  # Redirection par défaut
         else:
             messages.error(request, "Email ou mot de passe incorrect.")
             return redirect('login')
@@ -58,25 +61,6 @@ def login_view(request):
 
 
 
-@login_required
-def comptable_dashboard(request):
-  
-    return render(request, 'login/comptable_dashboard.html')
-
-
-@login_required
-def directeur_dashboard(request):
-
-    return render(request,'login/directeur_dashboard.html')
-
-    
-
-
-@login_required
-def enseignant_dashboard(request):
-  
-
-     return render(request,'login/enseignant_dashboard.html')
 
 #DECONNEXION
 def logout_view(request):
@@ -233,3 +217,76 @@ def password_reset_request(request):
                 # L'utilisateur n'existe pas
                 pass
     return render(request, 'login/password_reset_request.html')
+
+
+
+
+
+
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def dashboard_redirect(request):
+    if request.user.fonction == 'FONDATEUR':
+        return redirect('fondateur_dashboard')  # Redirige vers le tableau de bord du fondateur
+    elif request.user.fonction == 'DG':
+        return redirect('dg_dashboard')  # Redirige vers le tableau de bord du directeur général
+    elif request.user.fonction == 'CENSEUR':
+        return redirect('censeur_dashboard')  # Redirige vers le tableau de bord du censeur
+    elif request.user.fonction == 'COMPTABLE':
+        return redirect('comptable_dashboard')  # Redirige vers le tableau de bord du comptable
+    elif request.user.fonction == 'ENSEIGNANT':
+        return redirect('enseignant_dashboard')  # Redirige vers le tableau de bord de l'enseignant
+    else:
+        return redirect('default_dashboard')  # Redirige vers un tableau de bord par défaut (optionnel)
+
+
+from django.shortcuts import render
+
+
+@login_required
+def comptable_dashboard(request):
+  
+    return render(request, 'login/comptable_dashboard.html')
+
+
+@login_required
+def directeur_dashboard(request):
+
+    return render(request,'login/directeur_dashboard.html')
+
+    
+
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from bulletin.models import BulletinAnnuel, BulletinTrimestriel  # Assurez-vous que ces modèles existent
+from matiere.models import Matiere
+from eleve.models import Eleve  # Importation du modèle Eleve
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from bulletin.models import BulletinAnnuel, BulletinTrimestriel
+from matiere.models import Matiere
+from eleve.models import Eleve
+
+@login_required
+def enseignant_dashboard(request):
+    # Récupérer les matières que l'enseignant enseigne
+    matieres = Matiere.objects.filter(enseignant=request.user)  # Maintenant, cela devrait fonctionner
+
+    # Récupérer les élèves inscrits dans les matières enseignées par l'enseignant
+    eleves = Eleve.objects.filter(matiere__in=matieres)
+
+    # Récupérer les bulletins annuels et trimestriels des élèves
+    bulletins_annuels = BulletinAnnuel.objects.filter(eleve__in=eleves)
+    bulletins_trimestriels = BulletinTrimestriel.objects.filter(eleve__in=eleves)
+
+    context = {
+        'matieres': matieres,
+        'eleves': eleves,
+        'bulletins_annuels': bulletins_annuels,
+        'bulletins_trimestriels': bulletins_trimestriels,
+    }
+    
+    return render(request, 'login/enseignant_dashboard.html', context)

@@ -42,6 +42,21 @@ class BulletinTrimestriel(models.Model):
         return f"Bulletin Trimestriel - {self.eleve.nom} - Trimestre {self.trimestre}"
 
 
+    def get_rang(self):
+        # Calcul du rang de l'élève par rapport aux autres dans le même trimestre et année scolaire
+        bulletins_trimestriels = BulletinTrimestriel.objects.filter(
+            annee_scolaire=self.annee_scolaire,
+            trimestre=self.trimestre
+        )
+        # Crée une liste de tuples (élève, moyenne totale) pour chaque bulletin
+        moyennes = [(b.eleve, b.moyenne_totale) for b in bulletins_trimestriels]
+        # Trie les élèves par leur moyenne totale décroissante
+        moyennes_triees = sorted(moyennes, key=lambda x: x[1], reverse=True)
+        # Recherche le rang de l'élève actuel
+        rang = next(index for index, (e, _) in enumerate(moyennes_triees) if e == self.eleve) + 1
+        return rang
+    
+#BULLETIN ANNUEL
 class BulletinAnnuel(models.Model):
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)

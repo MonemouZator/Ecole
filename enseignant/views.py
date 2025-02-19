@@ -62,38 +62,28 @@ def ajout(request):
     
 ####################### FONCTION DE MODIFICATION DES INFORMATIONS ######################
 
-def modifier(request):
-    if request.method=='POST':
-        pk=request.POST.get('id')
-        maitre=get_object_or_404(Enseignant,id=pk)
-        nom=request.POST.get('nom')
-        prenom=request.POST.get('prenom')
-        tel=request.POST.get('tel')
-        sexe=request.POST.get('sexe')
-        adresse=request.POST.get('adresse')
-        date=request.POST.get('naissance')
-        lieu=request.POST.get('lieu')
-        photo=request.POST.get('photo')
-        specilite=request.POST.get('sp')
-        email=request.POST.get('email')
+from django.shortcuts import get_object_or_404, redirect
+from django.core.exceptions import ValidationError
+from .models import Enseignant
 
-        maitre.nom=nom
-        maitre.prenom=prenom
-        maitre.telephone=tel
-        maitre.sexe=sexe
-        maitre.adresse=adresse
-        maitre.date_naissance=date
-        maitre.lieu_naiss=lieu
-        maitre.photo=photo
-        maitre.specialite=specilite
-        maitre.email=email
-        maitre.save()
+def modifier(request, id):
+    enseignant = get_object_or_404(Enseignant, id=id)
+    if request.method == 'POST':
+        enseignant.nom = request.POST.get('nom')
+        enseignant.prenom = request.POST.get('prenom')
+        enseignant.telephone = request.POST.get('tel')
+        enseignant.sexe = request.POST.get('sexe')
+        enseignant.adresse = request.POST.get('adresse')
+        enseignant.date_naiss = request.POST.get('naissance')
+        enseignant.lieu_naiss = request.POST.get('lieu')
+        enseignant.email = request.POST.get('email')
+        if request.FILES.get('photo'):
+            enseignant.photo = request.FILES.get('photo')
+        enseignant.save()
+        return redirect('enseignant')  # Rediriger après la mise à jour
+    return render(request, 'enseignant/enseignant.html', {'enseignant': enseignant})
+        
 
-        return redirect('enseignant')
-    else:
-        return redirect('enseignant')
-
-    
 ##################FONCTION DE SUPPRESSION DES INFORMATIONS#####################
 
 def  supprim(request,pk):
@@ -102,9 +92,10 @@ def  supprim(request,pk):
 
     return redirect('enseignant')
 
-def detail_enseignant(request):
-     
-     return render(request,'enseignant/enseignant.html')
+def enseignant_detail(request, id):
+    enseignant = get_object_or_404(Enseignant, id=id)
+    return render(request, 'enseignant/enseignant.html', {'enseignant': enseignant}) 
+
 
 
 

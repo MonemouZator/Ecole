@@ -8,11 +8,11 @@
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
   <style>
     body {
-      background-color: #f4f6f9; /* Couleur de fond claire */
+      background-color: #f4f6f9;
       font-family: 'Source Sans Pro', sans-serif;
-      color: #333333; /* Texte sombre pour une meilleure lisibilité */
+      color: #333333;
     }
-    
+
     .content-wrapper {
       background-color: #ffffff;
       padding: 30px;
@@ -26,6 +26,8 @@
     }
 
     .form-inline {
+      display: flex;
+      justify-content: space-between;
       margin-bottom: 20px;
       border-bottom: 2px solid #007bff;
       padding-bottom: 20px;
@@ -51,11 +53,6 @@
       border-color: #007bff;
     }
 
-    .btn-secondary {
-      background-color: #6c757d;
-      border-color: #6c757d;
-    }
-
     .table {
       background-color: #f9f9f9;
       border-radius: 8px;
@@ -63,11 +60,11 @@
     }
 
     .table th {
-      background-color: #000; /* Fond noir pour l'entête */
-      color: #ffffff; /* Texte blanc pour une meilleure lisibilité */
+      background-color: #000;
+      color: #ffffff;
       text-align: center;
-      font-size: 16px; /* Augmenter la taille de la police de l'entête */
-      padding: 12px; /* Espacement des cellules de l'entête */
+      font-size: 16px;
+      padding: 12px;
     }
 
     .table td {
@@ -75,70 +72,47 @@
       padding: 12px;
     }
 
-    .alert {
-      border-radius: 5px;
-      margin-top: 20px;
-    }
-
-    hr {
-      border: 0;
-      border-top: 3px solid #007bff;
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-
-    .republique h1, .republique h2 {
-      color: #0056b3;
-      font-weight: bold;
-    }
-
-    .devise {
-      font-size: 18px;
-      font-style: italic;
-      color: #777777;
-    }
-
-    #impression {
-      margin-top: 20px;
-      padding: 30px;
-      background-color: #ffffff;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-
-    /* Style pour l'impression */
+    /* Style for print */
     @media print {
-      /* Appliquer une bordure au tableau et ses cellules */
-      .table, .table th, .table td {
-        border: 1px solid #000; /* Bordure noire */
-        border-collapse: collapse; /* Fusionner les bordures */
-      }
-
-      /* Appliquer un fond noir et texte blanc pour l'entête du tableau lors de l'impression */
-      .table th {
-        background-color:: #0056b3; /* Fond noir */
-        color: #ffffff; /* Texte blanc */
-        font-size: 18px; /* Augmenter la taille de la police de l'entête */
-        padding: 14px; /* Espacement des cellules de l'entête */
-      }
-
-      /* Supprimer les éléments non nécessaires à l'impression */
-      body * {
+      body {
         visibility: hidden;
       }
 
-      #impression, #impression * {
+      .content-wrapper, .content-wrapper * {
         visibility: visible;
       }
 
-      /* Ajustement pour le titre lors de l'impression */
-      h1, h2, h3 {
-        font-size: 20px;
-        text-align: center;
+      .content-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
       }
 
-      /* Cacher les boutons lors de l'impression */
-      button {
+      .table, .table th, .table td {
+        border: 1px solid #000;
+        border-collapse: collapse;
+      }
+
+      .table th {
+        background-color: #0056b3;
+        color: #ffffff;
+        font-size: 18px;
+        padding: 14px;
+      }
+
+      .table td {
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      /* Hide filters, form fields, and buttons for print */
+      .form-inline, form, #imprimer {
+        display: none;
+      }
+
+      /* Hide other elements like navigation or headers if necessary */
+      header, footer, .sidebar, .navbar {
         display: none;
       }
     }
@@ -146,119 +120,105 @@
 {% endblock %}
 
 {% block body %}
-<body class="hold-transition sidebar-mini">
+  <body class="hold-transition sidebar-mini">
 {% endblock body %}
 
 {% block contenu %}
-   <div class="content-wrapper">
-        <h1>Résultats Trimestriels</h1>
+  <div class="content-wrapper">
+    {% if error_message %}
+      <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
 
-        {% if error_message %}
-            <div class="alert alert-danger">
-                {{ error_message }}
-            </div>
-        {% endif %}
+    <form method="get" class="form-inline mb-4">
+      <div>
+        <label for="niveau">Niveau :</label>
+        <select name="niveau" id="niveau" class="form-control">
+          <option value="">Sélectionnez un niveau</option>
+          {% for niveau in niveaux %}
+            <option value="{{ niveau.id }}" {% if niveau_id == niveau.id %}selected{% endif %}>{{ niveau.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-       <form method="get" class="form-inline">
-                <!-- Sélection du Niveau -->
-                <div class="form-group mx-sm-3 mb-2">
-                  <label for="niveau" class="sr-only">Niveau</label>
-                  <select name="niveau" id="niveau" class="form-control" required>
-                    <option value="">-- Sélectionnez un niveau --</option>
-                    {% for niveau in niveaux %}
-                        <option value="{{ niveau.id }}" {% if niveau.id == niveau_selectionne %}selected{% endif %}>{{ niveau.nom }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
+      <div>
+        <label for="annee_scolaire">Année Scolaire :</label>
+        <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+          <option value="">Sélectionnez une année scolaire</option>
+          {% for annee in annees_scolaires %}
+            <option value="{{ annee.id }}" {% if annee_scolaire_id == annee.id %}selected{% endif %}>{{ annee.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
 
-                <!-- Sélection de l'Année Scolaire -->
-                <div class="form-group mx-sm-3 mb-2">
-                  <label for="annee_scolaire" class="sr-only">Année Scolaire</label>
-                  <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
-                    <option value="">-- Sélectionnez une année scolaire --</option>
-                    {% for annee in annees_scolaires %}
-                      <option value="{{ annee.id }}" {% if annee.id == annee_selectionnee %}selected{% endif %}>{{ annee.nom }}</option>
-                    {% endfor %}
-                  </select>
-                </div>
+      <div>
+        <label for="trimestre">Trimestre :</label>
+        <select name="trimestre" id="trimestre" class="form-control">
+          <option value="">Sélectionnez un trimestre</option>
+          <option value="1" {% if trimestre == '1' %}selected{% endif %}>1er Trimestre</option>
+          <option value="2" {% if trimestre == '2' %}selected{% endif %}>2ème Trimestre</option>
+          <option value="3" {% if trimestre == '3' %}selected{% endif %}>3ème Trimestre</option>
+        </select>
+      </div>
 
-                <!-- Sélection du Trimestre -->
-                <div class="form-group mx-sm-3 mb-2">
-                  <label for="trimestre" class="sr-only">Trimestre</label>
-                  <select name="trimestre" id="trimestre" class="form-control" required>
-                    <option value="">-- Sélectionnez un trimestre --</option>
-                    <option value="1" {% if trimestre_selectionne == "1" %}selected{% endif %}>1er Trimestre</option>
-                    <option value="2" {% if trimestre_selectionne == "2" %}selected{% endif %}>2ème Trimestre</option>
-                    <option value="3" {% if trimestre_selectionne == "3" %}selected{% endif %}>3ème Trimestre</option>
-                  </select>
-                </div>
+      <div>
+        <button type="submit" class="btn btn-primary mt-2">Filtrer</button>
+      </div>
 
-                <button type="submit" class="btn btn-primary mb-2">Rechercher</button>
-                <button type="button" onclick="imprimer()" class="btn btn-secondary mb-2">Imprimer</button>
-         </form>
+      <!-- Print button -->
+      <div class="text-center mt-4">
+        <button id="imprimer" class="btn btn-primary" onclick="window.print()">Imprimer</button>
+      </div>
+    </form>
 
+    {% if sorted_bulletins %}
+      <div id="impression">
+        <center>
+          <div class="republique">
+            <h1>RÉPUBLIQUE DE GUINÉE</h1>
+          </div>
+          <div class="devise">
+            Travail - Justice - Solidarité
+          </div>
 
-        {% if sorted_bulletins %}
-              <div id="impression">
-                <center>
-                  <div class="republique">
-                    <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                  </div>
-                  <div class="devise">
-                    Travail - Justice - Solidarité
-                  </div>
+          <div class="republique">
+            <h2>Groupe Scolaire Privé BNB</h2>
+          </div>
+          <div class="devise">
+            Union - Sincérité - Réussite
+          </div>
 
-                  <div class="republique">
-                    <h2>Groupe Scolaire Privé BNB</h2>
-                  </div>
-                  <div class="devise">
-                    Union - Sincérité - Réussite
-                  </div>
+          <h3>Résultat du {{ trimestre }}<sup>ème</sup> Trimestre - {{ annee_scolaire_id }}</h3>
+        </center>
 
-                  <h3>Résultat du {{ trimestre_selectionne }}<sup>ème</sup> Trimestre - {{ annee_selectionnee }}</h3>
-                </center>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Rang</th>
-                        <th>Elève</th>
-                        <th>Moyenne</th>
-                        <th>Observation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for data in sorted_bulletins %}
-                        <tr>
-                            <td>{{ data.rang }}</td>
-                            <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
-                            <td>{{ data.moyenne }}</td>
-                            <td>{{ data.observation }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="alert alert-info">
-                Aucun bulletin trouvé pour les critères sélectionnés.
-            </div>
-        {% endif %}
-    </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Élève</th>
+              <th>Moyenne Annuelle</th>
+              <th>Rang</th>
+              <th>Observation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for bulletin in sorted_bulletins %}
+              <tr>
+                <td>{{ bulletin.bulletin.eleve.nom }}</td>
+                <td>{{ bulletin.moyenne }}</td>
+                <td>{{ bulletin.rang }}<sup>ème</sup></td>
+                <td>{{ bulletin.observation }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>Aucun bulletin disponible pour cette sélection.</p>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block scripte %}
-<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-<script>
-  function imprimer() {
-    var printContents = document.getElementById("impression").outerHTML;
-    var originalContents = document.body.innerHTML;
-    
-    document.body.innerHTML = printContents;
-    window.print();
-    document.body.innerHTML = originalContents;
-    location.reload(); // Recharge la page après l'impression pour éviter les problèmes d'affichage
-  }
-</script>
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 {% endblock %}

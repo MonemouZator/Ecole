@@ -179,33 +179,35 @@
                     Union - Sincérité - Réussite
                 </div>
 
-                <h3>Résultat du {{ trimestre_selectionne }}<sup>ème</sup> Trimestre - {{ annee_selectionnee }}</h3>
+                <h3>Résultat annuel de la {{ bulletin.niveau.nom }}</h3>
             </center>
             <table class="table table-bordered">
     <thead>
         <tr>
             <th>Élève</th>
-            <th>Moyenne Annuelle</th>
+           
             <th>Rang</th>
+             <th>Moyenne Annuelle</th>
             <th>Observation</th>
         </tr>
     </thead>
     <tbody>
         {% for bulletin in bulletins %}
             <tr>
-                <td>{{ bulletin.eleve.nom }}</td>
-                <td>{{ bulletin.moyenne_annuelle }}</td>
+                <td>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }}</td>
+                
                 <td>
                     {% if bulletin.rang == 1 %}
-                        1er
+                       
                     {% elif bulletin.rang == 2 %}
-                        2ème
+                        2
                     {% elif bulletin.rang == 3 %}
-                        3ème
+                       
                     {% else %}
-                        {{ bulletin.rang }}ème
+                        {{ bulletin.rang }}
                     {% endif %}
                 </td>
+                <td>{{ bulletin.moyenne_annuelle }}</td>
                 <td>{{ bulletin.observation }}</td>
             </tr>
         {% endfor %}

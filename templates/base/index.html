@@ -120,206 +120,244 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        
+            <!--  Menu des liens vers la gauche -->
+
+              
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link active">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Tableau de bord  
-              </p>
-            </a>
-         </li>
-            
-           
+
   
           <li class="nav-item">
+
             <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
+        
               <p>
-                Services
-                <i class="fas fa-angle-left right"></i>
+                Gestion enseignants
+                <span class="right badge badge-danger">voir +</span>
               </p>
             </a>
+            
+
             <ul class="nav nav-treeview">
               <li class="nav-item">
                   <a href="{% url 'enseignant' %}" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
+                    <i class="badge badge-danger"><span class="text-white">1</span></i>
+
                       <p>Enseignants</p>
                   </a>
               </li>
-                <li class="nav-item">
-                    <a href="{% url 'eleve' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Eleve</p>
-                    </a>
-                </li>
-
-                  <li class="nav-item">
-                    <a href="{% url 'configuration' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Paiement eleve</p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{% url 'liste_eleves' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Payer</p>
-                    </a>
-                </li>
-
-                  <li class="nav-item">
-                    <a href="{% url 'paiement_salaire' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Salaire</p>
-                    </a>
-                </li>
-
-                  <li class="nav-item">
-                    <a href="{% url 'depense' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Depense</p>
-                    </a>
-                </li>
-
-                  <li class="nav-item">
-                    <a href="{% url 'bilan_financier' %}" class="nav-link">
-                        <i class="far fa-circle nav-icon"></i>
-                        <p>Finance</p>
-                    </a>
-                </li>
-
-              <li class="nav-item">
-                <a href="{% url 'matiere' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Matiere</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'attribuer-notes' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>G.Notes</p>
-                </a>
-              </li>
-
-               <li class="nav-item">
-                <a href="{% url 'trimestre' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Creation</p>
-                </a>
-              </li>
-
-               <li class="nav-item">
-                <a href="{% url 'valider_bulletin' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Validation</p>
-                </a>
-              </li>
-           
-              <li class="nav-item">
-                <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Bulletins Trimes</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'bulletins_annuels' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Emploi du temps</p>
-                </a>
-              </li>
-              
-              <li class="nav-item">
-                <a href="{% url 'bulletins_option' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>bulletin trimestriel option</p>
-                </a>
-              </li>
-                  <li class="nav-item">
-                <a href="{% url 'bulletins_groupe' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>bulletin Annuel option</p>
-                </a>
-              </li>
-              </li>
-                <li class="nav-item">
-                <a href="{% url 'resultat_groupe' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Resultat Annuel</p>
-                </a>
-                </li>
-                 <li class="nav-item">
-                  <a href="{% url 'resultat_annuel' %}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resultat Annuel G</p>
-                  </a>
-                </li>
-
-                <li class="nav-item">
-                  <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resultat trimestriel</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="{% url 'resultats_annuels' %}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Resultat total</p>
-                  </a>
-                </li>
-
-            </ul>
-          </li>
-          
-   
-         
-          <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tree"></i>
-              <p>
-                Paramètes
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                  <a href="{% url 'an' %}" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>Année Scolaire</p>
-                  </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'cycle' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Cycles</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'niveau' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Niveau</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'groupe' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Groupe de classe</p>
-                </a>
-              </li>
-              
               <li class="nav-item">
                 <a href="{% url 'ajouter_administrateur' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
                   <p>Ajout utilisateur</p>
                 </a>
               </li>
 
               <li class="nav-item">
                 <a href="{% url 'password_reset_request' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
                   <p>Password oublier</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+           
+              <p>
+                Gestion eleves
+                <span class="right badge badge-danger">voir +</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'eleve' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">1</span></i>
+                    <p>Ajouter un nouveau eleve</p>
+                </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'eleve' %}" class="nav-link">
+                <i class="badge badge-danger"><span class="text-white">2</span></i>
+                  <p>Liste des eleves</p>
+              </a>
+          </li>
+            <li class="nav-item">
+              <a href="{% url 'attribuer-notes' %}" class="nav-link">
+                <i class="badge badge-danger"><span class="text-white">3</span></i>
+                <p>Affecter de note</p>
+              </a>
+            </li>
+
+             <li class="nav-item">
+              <a href="{% url 'trimestre' %}" class="nav-link">
+                <i class="badge badge-danger"><span class="text-white">4</span></i>
+                <p>Creer bulletin trimestriel</p>
+              </a>
+            </li>
+
+             <li class="nav-item">
+              <a href="{% url 'valider_bulletin' %}" class="nav-link">
+                <i class="badge badge-danger"><span class="text-white">5</span></i>
+                <p>Creer bulletin annuel</p>
+              </a>
+            </li>
+
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+             
+              <p>
+                Gestion bulletins
+                 <span class="right badge badge-danger">voir +</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">1</span></i>
+                  <p>Bulletins Trimes</p>
+                </a>
+              </li>
+              <!-- <li class="nav-item">
+                <a href="{% url 'bulletins_annuels' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
+                  <p>Emploi du temps</p>
+                </a>
+              </li> -->
+              
+              <li class="nav-item">
+                <a href="{% url 'bulletins_option' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                  <p>bulletin trimestriel par option</p>
+                </a>
+              </li>
+                  <li class="nav-item">
+                <a href="{% url 'bulletins_groupe' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                  <p>bulletin Annuel par option</p>
+                </a>
+              </li>
+              </li>
+                <li class="nav-item">
+                <a href="{% url 'resultat_groupe' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                  <p>Resultat trimestriel par option</p>
+                </a>
+                </li>
+                 <li class="nav-item">
+                  <a href="{% url 'resultat_annuel' %}" class="nav-link">
+                    <i class="badge badge-danger"><span class="text-white">5</span></i>
+                    <p>Resultat Annuel par option</p>
+                  </a>
+                </li>
+
+                <li class="nav-item">
+                  <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
+                    <i class="badge badge-danger"><span class="text-white">6</span></i>
+                    <p>Resultat trimestriel par niveau</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'resultats_annuels' %}" class="nav-link">
+                    <i class="badge badge-danger"><span class="text-white">7</span></i>
+                    <p>Resultat annuel par niveau</p>
+                  </a>
+                </li>
+
+            </ul>
+          </li>
+
+
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              
+              <p>
+                Comptabilité
+                <span class="right badge badge-danger">voir +</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'configuration' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">1</span></i>
+                    <p>Paiement des frais scolarité</p>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="{% url 'liste_eleves' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
+                    <p>Statut de Paiement</p>
+                </a>
+            </li>
+
+              <li class="nav-item">
+                <a href="{% url 'paiement_salaire' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                    <p>Paiement de Salaire</p>
+                </a>
+            </li>
+
+              <li class="nav-item">
+                <a href="{% url 'depense' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                    <p>Effectué une dépense </p>
+                </a>
+            </li>
+
+              <li class="nav-item">
+                <a href="{% url 'bilan_financier' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">5</span></i>
+                    <p>Finance</p>
+                </a>
+            </li>
+            </ul>
+          </li>
+         
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+             
+              <p>
+                Paramètes
+                <span class="right badge badge-danger">voir +</span>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                  <a href="{% url 'an' %}" class="nav-link">
+                    <i class="badge badge-danger"><span class="text-white">1</span></i>
+                      <p>Gestion des Années Scolaire</p>
+                  </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'cycle' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
+                  <p>Gestion des Cycles</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'niveau' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                  <p>Gestion des Niveaux</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'groupe' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                  <p>Groupe de classe</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'matiere' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">5</span></i>
+                  <p>Gestion des Matieres</p>
                 </a>
               </li>
 
@@ -328,20 +366,15 @@
           
             <li class="nav-item">
                 <a href="{% url 'logout' %}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
+
                   <p>Deconexion</p>
                 </a>
               </li>
-         
-         
-         
-          
-      
-          
-          
-          
-         
         </ul>
+
+
+
       </nav>
       <!-- /.sidebar-menu -->
     </div>

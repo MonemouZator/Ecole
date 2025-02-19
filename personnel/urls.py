@@ -15,8 +15,11 @@ urlpatterns = [
     path('debloquer/<int:utilisateur_id>/', views.debloquer_utilisateur, name='debloquer_utilisateur'),
     path('reset/', views.password_reset_request, name='password_reset_request'),
 
-   path('comptable/', views.comptable_dashboard, name='comptable_dashboard'),
-   path('directeur/', views.directeur_dashboard, name='directeur_dashboard'),
-   path('enseignant/', views.enseignant_dashboard, name='enseignant_dashboard'),
-
+    path('dashboard/', views.dashboard_redirect, name='dashboard_redirect'),
+    #path('fondateur-dashboard/', views.fondateur_dashboard, name='fondateur_dashboard'),
+    #path('dg-dashboard/', views.dg_dashboard, name='dg_dashboard'),
+    #path('censeur-dashboard/', views.censeur_dashboard, name='censeur_dashboard'),
+    path('comptable-dashboard/', views.comptable_dashboard, name='comptable_dashboard'),
+    path('enseignant-dashboard/', views.enseignant_dashboard, name='enseignant_dashboard'),
+    # Ajoutez d'autres URL si nécessaire
 ]

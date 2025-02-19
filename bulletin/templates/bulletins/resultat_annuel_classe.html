@@ -1,6 +1,7 @@
 {% extends "Base/index.html" %}
 {% load static %}
- {% block styl_parent %}
+
+{% block styl_parent %}
   <title>enseignant | Accueil</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -11,9 +12,9 @@
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
- {% block body %}
+{% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
+{% endblock body %}
 
 {% block contenu %}
 <div class="content-wrapper">
@@ -21,7 +22,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1>Résultats trimestriel par groupe de classe</h1>
+          <h1>Résultats trimestriels par groupe de classe</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
@@ -80,7 +81,6 @@
         <div class="card mt-4" id="tableau_resultats">
           <div class="card-header">
             <center>
-                <!-- Républiques et devises sur la même page -->
                 <div class="republique">
                   <h1 style="font-size: 36px; font-weight: bold; color: #0056b3;">RÉPUBLIQUE DE GUINÉE</h1>
                 </div>
@@ -92,9 +92,8 @@
                 <div class="devise" style="font-size: 20px; font-style: italic; color: #777777; margin-bottom: 20px;">Union - Sincérité - Réussite</div>
                 
                 <h3 style="font-size: 24px; font-weight: normal; color: #333333;">
-                    Resultat trimestriel par groupe de classe ou option
+                    Résultat trimestriel par groupe de classe ou option
                   </h3>
-
               </center>
           </div>
           <div class="card-body table-responsive">
@@ -110,7 +109,17 @@
               <tbody>
                 {% for data in sorted_bulletins %}
                   <tr>
-                    <td>{{ data.rang }}</td>
+                    <td>
+                      {% if data.rang == 1 %}
+                        1er
+                      {% elif data.rang == 2 %}
+                        2ème
+                      {% elif data.rang == 3 %}
+                        3ème
+                      {% else %}
+                        {{ data.rang }}ème
+                      {% endif %}
+                    </td>
                     <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
                     <td>{{ data.moyenne }}</td>
                     <td>{{ data.observation }}</td>
@@ -129,7 +138,6 @@
 {% endblock %}
 
 {% block scripte %}
-
 <!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->

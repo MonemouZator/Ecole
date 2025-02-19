@@ -266,25 +266,25 @@ def resultat_groupe(request):
             observation = "Bien"
         elif moyenne >= 12:
             observation = "Assez Bien"
-
         elif moyenne >= 10:
-            observation = "passable"
+            observation = "Passable"
         else:
-            observation = "Mediocre"
-
+            observation = "Médiocre"
+        
         bulletins_with_data.append({
             'bulletin': bulletin,
             'moyenne': moyenne,
             'observation': observation,
         })
 
+    # Tri des bulletins par moyenne décroissante
     sorted_bulletins = sorted(
         bulletins_with_data,
         key=lambda b: b['moyenne'],
         reverse=True
     )
 
-    # Calcul des rangs
+    # Calcul des rangs dans le groupe
     for index, data in enumerate(sorted_bulletins):
         data['rang'] = index + 1
 
@@ -376,12 +376,13 @@ def resultat_annuel(request):
     })
 
 
+########## AFICHARGE DES RESULTATS TRIMESTRIELS PAR NIVEAU ET ANNEE SCOLAIRE
+
 def resultats_trimestriels(request):
     # Récupération des paramètres GET
     niveau_id = request.GET.get('niveau')
     annee_scolaire_id = request.GET.get('annee_scolaire')
     trimestre = request.GET.get('trimestre')
-
 
     # Récupération des données pour les champs de sélection
     niveaux = Niveau.objects.all()
@@ -403,10 +404,8 @@ def resultats_trimestriels(request):
 
         bulletins = BulletinTrimestriel.objects.filter(
             annee_scolaire_id=annee_scolaire_id,
-            trimestre=trimestre,
             eleve__niveau_id=niveau_id  # Filtrer aussi par niveau des élèves
         )
-        print(f"Bulletins trouvés : {bulletins.count()}")  # Afficher le nombre de bulletins trouvés
     except ValueError:
         return render(request, 'bulletins/resultats_trimestriels.html', {
             'error_message': 'Paramètres de filtrage invalides.',
@@ -415,10 +414,11 @@ def resultats_trimestriels(request):
             'trimestre_selectionne': trimestre,
         })
 
-    # Ajout des moyennes et observations
+    # Ajout des moyennes, observations et rangs
     bulletins_with_data = []
     for bulletin in bulletins:
-        moyenne = bulletin.moyenne_totale or 0
+        # Récupérer la moyenne totale pour chaque bulletin
+        moyenne = bulletin.moyenne_totale
         if moyenne >= 19:
             observation = "Excellent"
         elif moyenne >= 17:
@@ -431,11 +431,15 @@ def resultats_trimestriels(request):
             observation = "Passable"
         else:
             observation = "Médiocre"
+        
+        # Ajouter le rang en utilisant la méthode get_rang()
+        rang = bulletin.get_rang()
 
         bulletins_with_data.append({
             'bulletin': bulletin,
             'moyenne': moyenne,
             'observation': observation,
+            'rang': rang,
         })
 
     # Tri des bulletins par moyenne décroissante
@@ -445,10 +449,6 @@ def resultats_trimestriels(request):
         reverse=True
     )
 
-    # Calcul des rangs
-    for index, data in enumerate(sorted_bulletins):
-        data['rang'] = index + 1
-
     return render(request, 'bulletins/resultats_trimestriels.html', {
         'niveaux': niveaux,
         'annees_scolaires': annees_scolaires,
@@ -456,6 +456,14 @@ def resultats_trimestriels(request):
         'trimestre_selectionne': trimestre,
     })
 
+
+
+
+
+################## AFFICHARGE DU RESULTAT ANNUEL PAS NIVEAU ET ANNEE SCOLAIRE ########
+def get_ordinal_suffix(rank):
+    """ Retourne le suffixe ordinal français (1er, 2ème, 3ème...) """
+    return "er" if rank == 1 else "ème"
 
 def resultats_annuels(request):
     niveau_id = request.GET.get('niveau')
@@ -475,15 +483,36 @@ def resultats_annuels(request):
         niveau_id = int(niveau_id)
         annee_scolaire_id = int(annee_scolaire_id)
 
-        bulletins = BulletinAnnuel.objects.filter(
+        # Récupérer les bulletins (sans tri)
+        bulletins = list(BulletinAnnuel.objects.filter(
             annee_scolaire_id=annee_scolaire_id,
             eleve__niveau_id=niveau_id
-        )
+        ))
 
-        # Calculer la moyenne et le rang pour chaque bulletin
-        for bulletin in bulletins:
-            bulletin.moyenne_annuelle = bulletin.moyenne_totale_annuelle
-            bulletin.rang = bulletin.get_rang()
+        # Trier les bulletins par moyenne annuelle décroissante
+        bulletins.sort(key=lambda b: b.moyenne_totale_annuelle, reverse=True)
+
+        ranked_bulletins = []
+        previous_moyenne = None
+        current_rank = 0
+        rank_count = 0  # Nombre d'ex æquo
+
+        for index, bulletin in enumerate(bulletins, start=1):
+            if previous_moyenne is not None and bulletin.moyenne_totale_annuelle == previous_moyenne:
+                rank_count += 1  # Comptage des ex æquo
+            else:
+                current_rank += rank_count + 1  # Sauter les ex æquo
+                rank_count = 0  # Réinitialisation
+
+            ranked_bulletins.append({
+                'eleve': bulletin.eleve,  # On stocke l'objet eleve
+                'moyenne_annuelle': bulletin.moyenne_totale_annuelle,
+                'rang': f"{current_rank}{get_ordinal_suffix(current_rank)}",
+                'observation': bulletin.observation
+            })
+
+
+            previous_moyenne = bulletin.moyenne_totale_annuelle
 
     except ValueError:
         return render(request, 'bulletins/resultats_annuels.html', {
@@ -493,7 +522,7 @@ def resultats_annuels(request):
         })
 
     return render(request, 'bulletins/resultats_annuels.html', {
-        'bulletins': bulletins,
+        'bulletins': ranked_bulletins,
         'niveaux': niveaux,
         'annees_scolaires': annees_scolaires,
         'niveau_selectionne': niveau_id,
