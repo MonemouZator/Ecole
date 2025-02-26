@@ -17,8 +17,8 @@ urlpatterns = [
     path('configuration/',views.eleve_selection,name='configuration'),
     path('recu/<int:recu_id>/', views.afficher_recu, name='afficher_recu'),
     path('payer_tranche2/<int:eleve_id>/', views.payer_tranche2, name='payer_tranche2'),
-    # path('recu2/<int:recu_id>/', views.afficher_recu, name='afficher_recu'),
+    path('recu-paiment/<int:recu_id>/', views.afficher_recu1, name='afficher_recu1'),
     path('liste-eleves/', views.liste_eleves, name='liste_eleves'),
-
-
+    path('/',views.liste_eleves_par_niveau_annee, name='liste_eleves_par_niveau_annee'),
+    path('liste-eleves-par-groupe/',views.liste_eleves_par_groupe, name='liste_eleves_par_groupe'),
 ]

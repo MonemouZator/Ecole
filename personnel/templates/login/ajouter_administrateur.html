@@ -17,9 +17,11 @@
 {% endblock %}
 
 {% block body %}
-{% endblock body %}
+<body class="hold-transition sidebar-mini layout-fixed">
+ {% endblock body %}
 
 {% block contenu %}
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
 
@@ -74,7 +76,7 @@
         <input type="date" class="form-control" id="date_naissance" name="date_naissance" required>
       </div>
 
-      <div class="form-group col-md-6">
+      <div class="form-group col-md-6  mb-4">
         <label for="lieu_naiss">Lieu de naissance :</label>
         <input type="text" class="form-control" id="lieu_naiss" name="lieu_naiss" required>
       </div>
@@ -94,9 +96,11 @@
         <label for="photo">Photo :</label>
         <input type="file" class="form-control" id="photo" name="photo">
       </div>
+        <center>
+                <button type="submit" class="btn btn-primary mt-3">Enregistrer</button>
+      
+        </center>
 
-      <button type="submit" class="btn btn-primary mt-3">Ajouter</button>
-      <a href="{% url 'liste_administrateurs' %}" class="btn btn-secondary mt-3">Retour à la liste</a>
     </form>
 
   </div>

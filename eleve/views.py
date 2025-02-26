@@ -51,6 +51,10 @@ def forme_modifie(request):
     return render(request,'eleve/ajout_modifier.html',context)
 
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from .models import Eleve, GroupeClasse, AnneeScolaire, Niveau, FraisScolarite, Recu
+
 def ajout(request):
     if request.method == 'POST':
         niveau = request.POST.get('nive')
@@ -127,13 +131,20 @@ def ajout(request):
             # Message de succès
             messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès et le premier paiement a été effectué.")
 
-            # Redirection vers la page d'affichage du reçu
-            return redirect('eleve/affiche.html', recu_id=recu.id)
+            # Redirection vers la vue d'affichage du reçu
+            return redirect('afficher_recu1', recu_id=recu.id)
+
         else:
             messages.error(request, "Les frais de scolarité existent déjà pour cet élève.")
-            return redirect('eleve')
-    else:
-        return render(request, 'eleve/affiche.html')
+            return redirect('liste_eleves')  # Modifier avec la bonne vue
+
+    return render(request, 'eleve/ajout_eleve.html')
+
+#AFFICHARGE DU RECU APRES VALIDATION DES DONNEES
+def afficher_recu1(request, recu_id):
+    recu = get_object_or_404(Recu, id=recu_id)
+    return render(request, 'eleve/afficher.html', {'recu': recu})
+
 
 
 
@@ -397,3 +408,58 @@ def eleve_detail(request, pk):
     # Récupérer l'élève avec l'ID passé en paramètre
     eleve = get_object_or_404(Eleve, id=pk)
     return render(request, 'eleve/detail.html', {'eleve': eleve})
+
+
+
+#afficher les eleves par niveau et annee scolaire
+
+from .models import Niveau, AnneeScolaire
+
+def liste_eleves_par_niveau_annee(request):
+    niveau_id = request.GET.get('niveau')
+    annee_id = request.GET.get('annee_scolaire')
+
+    eleves = Eleve.objects.filter(actif=True)
+    niveaux = Niveau.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    if niveau_id:
+        eleves = eleves.filter(niveau_id=niveau_id)
+    
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire_id=annee_id)
+
+    return render(request, 'eleve/liste_eleves_par_niveau_annee.html', {
+        'eleves': eleves,
+        'niveaux': niveaux,
+        'annees': annees,
+    })
+
+
+#AFFICHER LES LES ELEVES PAR GROUPE DE CLASSE OU OPTION ET ANNEE SCOlAIRE
+
+from django.shortcuts import render
+from .models import Eleve, GroupeClasse
+
+def liste_eleves_par_groupe(request):
+    groupes = GroupeClasse.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    groupe_id = request.GET.get('groupe')
+    annee_id = request.GET.get('annee_scolaire')
+
+    # Filtrer les élèves en fonction des valeurs sélectionnées
+    eleves = Eleve.objects.all()
+
+    if groupe_id:
+        eleves = eleves.filter(groupe_classe__id=groupe_id)  # Correction ici
+
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire__id=annee_id)
+
+    context = {
+        'eleves': eleves,
+        'groupes': groupes,
+        'annees': annees
+    }
+    return render(request, 'eleve/liste_eleves_par_groupe.html', context)

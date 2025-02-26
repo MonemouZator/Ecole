@@ -40,7 +40,7 @@
           </div>
           <div class="col-md-4">
               <label for="groupeclasse" class="form-label">Groupe Classe</label>
-              <select name="groupeclasse" id="groupeclasse" class="form-select" required>
+              <select name="groupeclasse" id="groupeclasse" class="form-select" >
                   <option value="">Sélectionner un groupe classe</option>
                   {% for groupeclasse in groupeclasses %}
                   <option value="{{ groupeclasse.nom }}">{{ groupeclasse.nom }}</option>
@@ -105,4 +105,5 @@
           });
       });
   </script>
+  
 {% endblock %}

@@ -1,0 +1,197 @@
+{% extends "Base/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+<div class="content-wrapper">
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>LISTE DES ÉLÈVES PAR GROUPE DE CLASSE OU OPTION</h1>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <form method="GET" class="form-inline">
+    <div class="form-group mr-2">
+        <label for="groupe">Groupe Classe:</label>
+        <select name="groupe" class="form-control ml-2">
+            <option value="">Tous</option>
+            {% for groupe in groupes %}
+                <option value="{{ groupe.id }}" {% if request.GET.groupe == groupe.id|stringformat:"s" %}selected{% endif %}>
+                    {{ groupe.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group ml-2">
+        <label for="annee_scolaire">Année Scolaire:</label>
+        <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+            <option value="">Toutes</option>
+            {% for annee in annees %}
+                <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+                    {{ annee.nom }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary ml-2">Filtrer</button>
+</form>
+
+                        </div>
+
+                        <div class="card-body">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead class="bg-primary">
+                                    <tr>
+                                        <th>N°</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Sexe</th>
+                                        <th>Contact</th>
+                                        <th>Adresse</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for eleve in eleves %}
+                                    <tr>
+                                        <td>{{ eleve.id }}</td>
+                                        <td>{{ eleve.nom }}</td>
+                                        <td>{{ eleve.prenom }}</td>
+                                        <td>{{ eleve.genre }}</td>
+                                        <td>{{ eleve.telephone }}</td>
+                                        <td>{{ eleve.lieu_naissance }}</td>
+                                        <td>
+                                            <a href="{% url 'eleve_detail' pk=eleve.id %}">
+                                                <i class="fas fa-eye" style="font-size: 1.5rem;"></i> Voir
+                                            </a>
+                                            <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
+                                                <i class="fas fa-edit"></i> Modifier
+                                            </a>
+                                            <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" title="Supprimer">
+                                                <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                                            </a>
+                                            <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-primary">
+                                                            <h5 class="modal-title">SUPPRESSION</h5>
+                                                            <button type="button" class="close" data-dismiss="modal">
+                                                                <span>&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Voulez-vous vraiment supprimer {{ eleve.nom }} {{ eleve.prenom }} ?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                                            <a href="{% url 'supprimer-eleve' eleve.id %}" class="btn btn-danger">Oui</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div> <!-- /.card-body -->
+                    </div> <!-- /.card -->
+                </div> <!-- /.col -->
+            </div> <!-- /.row -->
+        </div> <!-- /.container-fluid -->
+    </section> <!-- /.content -->
+</div> <!-- /.content-wrapper -->
+{% endblock %}
+
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(document).ready(function () {
+    $("#example1").DataTable({
+      "language": {
+        "sProcessing": "Traitement en cours...",
+        "sSearch": "Rechercher&nbsp;:",
+        "sLengthMenu": "Afficher _MENU_ entrées",
+        "sInfo": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+        "sInfoEmpty": "Affichage de 0 à 0 sur 0 entrée",
+        "sInfoFiltered": "(filtré de _MAX_ entrées au total)",
+        "sLoadingRecords": "Chargement en cours...",
+        "sZeroRecords": "Aucune entrée correspondante trouvée",
+        "sEmptyTable": "Aucune donnée disponible",
+        "oPaginate": {
+          "sFirst": "Premier",
+          "sPrevious": "Précédent",
+          "sNext": "Suivant",
+          "sLast": "Dernier"
+        },
+        "oAria": {
+          "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+          "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+        }
+      }
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,223 @@
+{% extends "Base/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>GESTION DES ÉLÈVES</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+              <li class="breadcrumb-item active">Liste des Élèves</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+
+            <div class="card">
+ 
+
+              <div class="card-body">
+                <!-- Formulaire de filtre -->
+                <form method="GET" class="row g-3 mb-3">
+                  <div class="col-md-4">
+                    <label for="niveau" class="form-label">Niveau :</label>
+                    <select name="niveau" id="niveau" class="form-control">
+                      <option value="">Tous</option>
+                      {% for niveau in niveaux %}
+                        <option value="{{ niveau.id }}" {% if request.GET.niveau == niveau.id|stringformat:"s" %}selected{% endif %}>{{ niveau.nom }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label for="annee_scolaire" class="form-label">Année Scolaire :</label>
+                    <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+                      <option value="">Toutes</option>
+                      {% for annee in annees %}
+                        <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filtrer</button>
+                  </div>
+                </form>
+
+                <!-- Tableau des élèves -->
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead class="bg-primary text-white">
+                    <tr>
+                      <th>N°</th>
+                      <th>Photo</th>
+                      <th>Nom</th>
+                      <th>Prénom</th>
+                      <th>Sexe</th>
+                      <th>Contact</th>
+                      <th>Adresse</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for eleve in eleves %}
+                      <tr>
+                        <td>{{ eleve.id }}</td>
+                        <td>
+                          {% if eleve.photo %}
+                            <img src="{{ eleve.photo.url }}" alt="Photo de {{ eleve.nom }}" class="img-thumbnail" width="50">
+                          {% else %}
+                            <span class="text-muted">Aucune photo</span>
+                          {% endif %}
+                        </td>
+                        <td>{{ eleve.nom }}</td>
+                        <td>{{ eleve.prenom }}</td>
+                        <td>{{ eleve.genre }}</td>
+                        <td>{{ eleve.telephone }}</td>
+                        <td>{{ eleve.lieu_naissance }}</td>
+                        <td>
+                          <a href="{% url 'eleve_detail' pk=eleve.id %}" class="text-info">
+                            <i class="fas fa-eye"></i> Voir
+                          </a>
+                          <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Modifier
+                          </a>
+                          <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" class="text-danger">
+                            <i class="fas fa-trash"></i> Supprimer
+                          </a>
+
+                          <!-- Fenêtre modale de suppression -->
+                          <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header bg-primary">
+                                  <h5 class="modal-title">SUPPRESSION</h5>
+                                  <button type="button" class="close" data-dismiss="modal">
+                                    <span>&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <p>Voulez-vous vraiment supprimer <strong>{{ eleve.nom }} {{ eleve.prenom }}</strong> ?</p>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                  <form action="{% url 'supprimer-eleve' eleve.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <!-- Fin de la modale -->
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="8" class="text-center text-danger">Aucun élève trouvé.</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(document).ready(function () {
+    $("#example1").DataTable({
+      "language": {
+        "sProcessing": "Traitement en cours...",
+        "sSearch": "Rechercher&nbsp;:",
+        "sLengthMenu": "Afficher _MENU_ entrées",
+        "sInfo": "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+        "sInfoEmpty": "Affichage de 0 à 0 sur 0 entrée",
+        "sInfoFiltered": "(filtré de _MAX_ entrées au total)",
+        "sLoadingRecords": "Chargement en cours...",
+        "sZeroRecords": "Aucune entrée correspondante trouvée",
+        "sEmptyTable": "Aucune donnée disponible",
+        "oPaginate": {
+          "sFirst": "Premier",
+          "sPrevious": "Précédent",
+          "sNext": "Suivant",
+          "sLast": "Dernier"
+        },
+        "oAria": {
+          "sSortAscending": ": activer pour trier la colonne par ordre croissant",
+          "sSortDescending": ": activer pour trier la colonne par ordre décroissant"
+        }
+      }
+    });
+  });
+</script>
+
+{% endblock %}

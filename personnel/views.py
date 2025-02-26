@@ -2,13 +2,33 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 #FONCTION DE LA PAGE D'ACCUEIL
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from annee_scolaire.models import AnneeScolaire
+from django.utils.timezone import now
 
 @login_required
 def home(request):
-
     services = request.session.get('services', [])
-    return render(request, 'base/index.html', {'services': services})
-  
+
+    # Trouver automatiquement l'année scolaire en fonction de la date actuelle
+    try:
+        annee = AnneeScolaire.objects.get(date_debut__lte=now().date(), date_fin__gte=now().date())
+    except AnneeScolaire.DoesNotExist:
+        annee = None  # Aucune année en cours trouvée
+
+    # Compter les élèves si une année scolaire est trouvée
+    if annee:
+        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee, actif=True).count()
+    else:
+        nombre_eleves_par_annee = 0  # Si aucune année n'est en cours, afficher 0
+
+    return render(request, 'base/index.html', {
+        'services': services,
+        'nombre_eleves_par_annee': nombre_eleves_par_annee,
+        'annee_selectionnee': annee
+    })
+
 
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login,logout
@@ -272,21 +292,6 @@ from eleve.models import Eleve
 
 @login_required
 def enseignant_dashboard(request):
-    # Récupérer les matières que l'enseignant enseigne
-    matieres = Matiere.objects.filter(enseignant=request.user)  # Maintenant, cela devrait fonctionner
+   
 
-    # Récupérer les élèves inscrits dans les matières enseignées par l'enseignant
-    eleves = Eleve.objects.filter(matiere__in=matieres)
-
-    # Récupérer les bulletins annuels et trimestriels des élèves
-    bulletins_annuels = BulletinAnnuel.objects.filter(eleve__in=eleves)
-    bulletins_trimestriels = BulletinTrimestriel.objects.filter(eleve__in=eleves)
-
-    context = {
-        'matieres': matieres,
-        'eleves': eleves,
-        'bulletins_annuels': bulletins_annuels,
-        'bulletins_trimestriels': bulletins_trimestriels,
-    }
-    
-    return render(request, 'login/enseignant_dashboard.html', context)
+    return render(request, 'login/enseignant_dashboard.html')

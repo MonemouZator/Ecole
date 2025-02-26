@@ -130,16 +130,12 @@
 
   
           <li class="nav-item">
-
             <a href="#" class="nav-link">
-        
               <p>
                 Gestion enseignants
                 <span class="right badge badge-danger">voir +</span>
               </p>
             </a>
-            
-
             <ul class="nav nav-treeview">
               <li class="nav-item">
                   <a href="{% url 'enseignant' %}" class="nav-link">
@@ -147,19 +143,6 @@
 
                       <p>Enseignants</p>
                   </a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'ajouter_administrateur' %}" class="nav-link">
-                  <i class="badge badge-danger"><span class="text-white">2</span></i>
-                  <p>Ajout utilisateur</p>
-                </a>
-              </li>
-
-              <li class="nav-item">
-                <a href="{% url 'password_reset_request' %}" class="nav-link">
-                  <i class="badge badge-danger"><span class="text-white">3</span></i>
-                  <p>Password oublier</p>
-                </a>
               </li>
             </ul>
           </li>
@@ -179,29 +162,41 @@
                     <p>Ajouter un nouveau eleve</p>
                 </a>
             </li>
-            <li class="nav-item">
-              <a href="{% url 'eleve' %}" class="nav-link">
-                <i class="badge badge-danger"><span class="text-white">2</span></i>
-                  <p>Liste des eleves</p>
-              </a>
-          </li>
+              <li class="nav-item">
+                <a href="{% url 'eleve' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
+                    <p>Liste des eleves</p>
+                </a>
+            </li>
+              <li class="nav-item">
+                <a href="{% url 'liste_eleves_par_niveau_annee' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                    <p>eleves par niveau</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'liste_eleves_par_groupe' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                    <p>eleves par option</p>
+                </a>
+             </li>
             <li class="nav-item">
               <a href="{% url 'attribuer-notes' %}" class="nav-link">
-                <i class="badge badge-danger"><span class="text-white">3</span></i>
+                <i class="badge badge-danger"><span class="text-white">5</span></i>
                 <p>Affecter de note</p>
               </a>
             </li>
 
              <li class="nav-item">
               <a href="{% url 'trimestre' %}" class="nav-link">
-                <i class="badge badge-danger"><span class="text-white">4</span></i>
+                <i class="badge badge-danger"><span class="text-white">6</span></i>
                 <p>Creer bulletin trimestriel</p>
               </a>
             </li>
 
              <li class="nav-item">
               <a href="{% url 'valider_bulletin' %}" class="nav-link">
-                <i class="badge badge-danger"><span class="text-white">5</span></i>
+                <i class="badge badge-danger"><span class="text-white">7</span></i>
                 <p>Creer bulletin annuel</p>
               </a>
             </li>
@@ -221,7 +216,7 @@
               <li class="nav-item">
                 <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
                   <i class="badge badge-danger"><span class="text-white">1</span></i>
-                  <p>Bulletins Trimes</p>
+                  <p>Bulletins trimestriel</p>
                 </a>
               </li>
               <!-- <li class="nav-item">
@@ -234,33 +229,33 @@
               <li class="nav-item">
                 <a href="{% url 'bulletins_option' %}" class="nav-link">
                   <i class="badge badge-danger"><span class="text-white">3</span></i>
-                  <p>bulletin trimestriel par option</p>
+                  <p>bulletin trimestriel classe</p>
                 </a>
               </li>
                   <li class="nav-item">
                 <a href="{% url 'bulletins_groupe' %}" class="nav-link">
                   <i class="badge badge-danger"><span class="text-white">4</span></i>
-                  <p>bulletin Annuel par option</p>
+                  <p>bulletin Annuel classe</p>
                 </a>
               </li>
               </li>
                 <li class="nav-item">
                 <a href="{% url 'resultat_groupe' %}" class="nav-link">
                   <i class="badge badge-danger"><span class="text-white">4</span></i>
-                  <p>Resultat trimestriel par option</p>
+                  <p>Resultat trimestriel classe</p>
                 </a>
                 </li>
                  <li class="nav-item">
                   <a href="{% url 'resultat_annuel' %}" class="nav-link">
                     <i class="badge badge-danger"><span class="text-white">5</span></i>
-                    <p>Resultat Annuel par option</p>
+                    <p>Resultat Annuel classe</p>
                   </a>
                 </li>
 
                 <li class="nav-item">
                   <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
                     <i class="badge badge-danger"><span class="text-white">6</span></i>
-                    <p>Resultat trimestriel par niveau</p>
+                    <p>Resultat trimestriel niveau</p>
                   </a>
                 </li>
                 <li class="nav-item">
@@ -332,7 +327,7 @@
               <li class="nav-item">
                   <a href="{% url 'an' %}" class="nav-link">
                     <i class="badge badge-danger"><span class="text-white">1</span></i>
-                      <p>Gestion des Années Scolaire</p>
+                      <p>Années Scolaire</p>
                   </a>
               </li>
               <li class="nav-item">
@@ -363,12 +358,45 @@
 
             </ul>
           </li>
-          
+          <li class="nav-item">
+
+            <a href="#" class="nav-link">
+        
+              <p>
+                Gestion utilisateurs
+                <span class="right badge badge-danger">voir +</span>
+              </p>
+            </a>
+            
+
+            <ul class="nav nav-treeview">
+              
+              <li class="nav-item">
+                <a href="{% url 'ajouter_administrateur' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">1</span></i>
+                  <p>Ajout utilisateur</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'liste_administrateurs' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">2</span></i>
+                  <p>Liste des utilisateurs</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'password_reset_request' %}" class="nav-link">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                  <p>Password oublier</p>
+                </a>
+              </li>
+            </ul>
+          </li>
             <li class="nav-item">
                 <a href="{% url 'logout' %}" class="nav-link">
                   <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
 
-                  <p>Deconexion</p>
+                  <p>Deconnexion</p>
                 </a>
               </li>
         </ul>
@@ -391,7 +419,10 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Dashboard</h1>
+            <center class="bg-gradient-primary">
+              <h1 class="m-0 text-center">BIENVENUE A LA PAGE D'ACCUEIL DE GESTION SCHOOL</h1>
+            </center>
+            
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -413,14 +444,20 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                {% if annee_selectionnee %}
+    <p>Année scolaire en cours : {{ annee_selectionnee.nom }}</p>
+     <h1><p>Nombre d'élèves inscrits :{{ nombre_eleves_par_annee }}</h1></p>
+{% else %}
+    <p>Aucune année scolaire en cours n'est définie.</p>
+{% endif %}
 
-                <p>New Orders</p>
+
+            
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -428,14 +465,14 @@
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>25<sup style="font-size: 20px"></sup></h3>
 
-                <p>Bounce Rate</p>
+                <p>Enseignants</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="#" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -443,14 +480,14 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-                <h3>44</h3>
+                <h3>6</h3>
 
-                <p>User Registrations</p>
+                <p>Utilisateurs</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="#" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -458,14 +495,14 @@
             <!-- small box -->
             <div class="small-box bg-danger">
               <div class="inner">
-                <h3>65</h3>
+                <h3>25</h3>
 
-                <p>Unique Visitors</p>
+                <p>Classes</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
